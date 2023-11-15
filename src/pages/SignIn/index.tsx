@@ -53,7 +53,7 @@ export function SignIn() {
       <Box
         w="680px"
         h="100%"
-        bgImage={`src/assets/bg_${period}_login.png`}
+        bgImage={`${import.meta.env.VITE_APP_URL}/img/bg_${period}_login.png`}
         bgPos="center"
         bgRepeat="no-repeat"
         bgSize="cover"
@@ -66,7 +66,7 @@ export function SignIn() {
         justifyContent="center"
       >
         <Image
-          src="src/assets/logo.png"
+          src={`${import.meta.env.VITE_APP_URL}/img/logo.png`}
           alt="logo do cursinho FEAUSP"
           h="80px"
           w="fit-content"
