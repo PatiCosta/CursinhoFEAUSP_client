@@ -164,7 +164,7 @@ export function Donations() {
                         {new Intl.NumberFormat('pt-BR', {
                           style: 'currency',
                           currency: 'BRL',
-                        }).format(donation.valuePaid)}
+                        }).format(donation.valuePaid / 100)}
                       </Td>
                       {isLg && (
                         <Td>

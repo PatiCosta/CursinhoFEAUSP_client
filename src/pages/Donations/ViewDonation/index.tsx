@@ -180,7 +180,7 @@ export function ViewDonation() {
               info={new Intl.NumberFormat('pt-BR', {
                 style: 'currency',
                 currency: 'BRL',
-              }).format(donation.valuePaid)}
+              }).format(donation.valuePaid / 100)}
             />
             <InfoBox
               title="Método de pagamento"
