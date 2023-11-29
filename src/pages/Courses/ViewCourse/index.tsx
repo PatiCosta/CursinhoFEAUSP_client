@@ -168,6 +168,44 @@ export function ViewCourse() {
               />
             </Grid>
           </Box>
+          <Box ml={{ base: 6, lg: 9 }} mt={{ base: 6, lg: 8 }}>
+            <Subtitle
+              size="sm"
+              icon={
+                <CaretDoubleRight
+                  size={isLg ? 32 : 24}
+                  color={course.informations.color}
+                  weight="duotone"
+                />
+              }
+              lineColor={course.informations.color}
+              justifyContent="space-between"
+            >
+              Matrícula
+            </Subtitle>
+            <Grid
+              mt={4}
+              templateColumns={{ base: '1fr', lg: '1.2fr .9fr .9fr' }}
+              gap={{ base: 4, lg: 8 }}
+              textAlign="start"
+            >
+              <InfoBox
+                title="Informações sobre a matrícula"
+                info={course.registrations.description}
+              />
+              <InfoBox
+                title="Valor"
+                info={
+                  course.registrations.value === 0
+                    ? 'Não informado'
+                    : new Intl.NumberFormat('pt-BR', {
+                        style: 'currency',
+                        currency: 'BRL',
+                      }).format(course.registrations.value / 100)
+                }
+              />
+            </Grid>
+          </Box>
           <Subtitle
             size="lg"
             icon={

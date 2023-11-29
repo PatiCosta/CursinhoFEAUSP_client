@@ -13,6 +13,10 @@ export interface CourseInfo {
     price: number
     subscriptionSchedule: string
   }
+  registrations: {
+    description: string
+    value: number
+  }
   status?: 'active' | 'inactive'
   title: string
 }
@@ -48,6 +52,10 @@ export interface Course {
     status: 'Aberto' | 'Em breve' | 'Fechado'
     price: number
     subscriptionSchedule: string
+  }
+  registrations: {
+    description: string
+    value: number
   }
   selectiveStages?: CourseStage[]
   documents?: CourseDocument[]

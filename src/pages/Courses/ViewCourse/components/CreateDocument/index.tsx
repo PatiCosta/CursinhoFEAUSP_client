@@ -42,7 +42,7 @@ export function CreateDocument({
   const { isOpen, onOpen, onClose } = useDisclosure()
   const isLg = useBreakpointValue({ base: false, sm: false, lg: true })
 
-  const { register, formState, handleSubmit } = useForm<FormValues>({
+  const { register, formState, handleSubmit, reset } = useForm<FormValues>({
     resolver: yupResolver(createDocumentFormSchema),
   })
 
@@ -56,9 +56,13 @@ export function CreateDocument({
       })
 
       await addDocument({ id: courseId, data: formData })
+      reset({
+        title: '',
+        downloadLink: '',
+      })
       onClose()
     },
-    [addDocument, onClose, courseId],
+    [addDocument, onClose, courseId, reset],
   )
 
   return (
