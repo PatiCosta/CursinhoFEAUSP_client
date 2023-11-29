@@ -15,6 +15,10 @@ export type CourseFormValues = {
     price: string
     subscriptionSchedule: string
   }
+  registrations: {
+    description: string
+    value: number
+  }
   selectiveStages: {
     when: string
     resultsDate?: string

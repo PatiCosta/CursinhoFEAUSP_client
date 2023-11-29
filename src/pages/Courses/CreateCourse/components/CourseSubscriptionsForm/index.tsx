@@ -28,7 +28,7 @@ export function CourseSubscriptionsForm() {
         <Text fontSize="xl" fontWeight="bold">
           2º passo
         </Text>
-        <Text fontWeight="light">Inscrições</Text>
+        <Text fontWeight="light">Inscrições e matrícula</Text>
       </Box>
       <FormControl isInvalid={!!errors.subscriptions?.status}>
         <Text
@@ -74,6 +74,20 @@ export function CourseSubscriptionsForm() {
         }}
         value={getValues('subscriptions.price')}
         error={errors.subscriptions?.price}
+      />
+      <Input
+        placeholder="Descrição sobre a matrícula"
+        {...register('registrations.description')}
+        error={errors.registrations?.description}
+      />
+      <CurrencyInput
+        placeholder="Valor da matrícula"
+        onChange={(valueString: string) => {
+          clearErrors('registrations.value')
+          setValue('registrations.value', Number(valueString))
+        }}
+        value={getValues('registrations.value')}
+        error={errors.registrations?.value}
       />
     </>
   )

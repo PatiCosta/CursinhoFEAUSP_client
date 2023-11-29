@@ -27,6 +27,10 @@ export const createCourseFormSchema = Yup.object({
       'A data das inscrições é obrigatória',
     ),
   }).required('As informações sobre inscrição são obrigatórias'),
+  registrations: Yup.object({
+    description: Yup.string().required('A descrição é obrigatória.'),
+    value: Yup.number().required('Valor obrigatório'),
+  }).required('Dados da matrícula obrigatórios'),
   selectiveStages: Yup.array()
     .of(
       Yup.object({

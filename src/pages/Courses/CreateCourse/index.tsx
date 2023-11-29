@@ -58,7 +58,7 @@ export function CreateCourse() {
     },
     {
       title: '2º passo',
-      description: 'Inscrições',
+      description: 'Inscrições e matrícula',
       isInvalid: !!errors.subscriptions,
     },
     {
@@ -93,6 +93,10 @@ export function CreateCourse() {
         subscriptions: {
           ...data.subscriptions,
           price: Number(data.subscriptions.price) * 100,
+        },
+        registrations: {
+          ...data.registrations,
+          value: Number(data.registrations.value) * 100,
         },
         selectiveStages: data.selectiveStages.map((stage) => {
           if (stage.resultsDate !== undefined) {
