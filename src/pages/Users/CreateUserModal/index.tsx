@@ -41,7 +41,7 @@ const createUserFormSchema = Yup.object().shape({
             'A confirmação e a senha não estão iguais',
           )
       : field,
-  ),
+  ).optional(),
 })
 
 type FormValues = {
