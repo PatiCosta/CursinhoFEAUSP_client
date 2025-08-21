@@ -27,7 +27,7 @@ import { IconButton } from '../../../../../components/IconButton'
 
 const createSelectiveStageFormSchema = Yup.object().shape({
   when: Yup.string().required('A data do estágio é obrigatório'),
-  resultsDate: Yup.string().nullable(),
+  resultsDate: Yup.string().nullable().optional(),
   description: Yup.string().required('A descrição da etapa é obrigatória'),
 })
 
