@@ -57,7 +57,7 @@ export function CreateUserModal() {
   const isLg = useBreakpointValue({ base: false, sm: false, lg: true })
 
   const { register, formState, handleSubmit } = useForm<FormValues>({
-    resolver: yupResolver(createUserFormSchema),
+    resolver: yupResolver(createUserFormSchema) as any,
   })
 
   const { errors } = formState
