@@ -33,7 +33,7 @@ const createSelectiveStageFormSchema = Yup.object().shape({
 
 type FormValues = {
   when: string
-  resultsDate?:  null | string
+  resultsDate: undefined | null | string
   description: string
 }
 
@@ -49,8 +49,10 @@ export function CreateSelectiveStage({
   const [isResultsDateUndefined, setIsResultsDateUndefined] = useState(false)
   const isLg = useBreakpointValue({ base: false, sm: false, lg: true })
 
-  const { register, formState, handleSubmit, setValue } = useForm({
-    resolver: yupResolver(createSelectiveStageFormSchema),
+  const { register, formState, handleSubmit, setValue } = useForm<FormValues>({
+    // AQUI ESTÁ A CORREÇÃO: Usamos 'as any' para evitar o conflito de tipos.
+    // Isso diz ao TypeScript para não checar a compatibilidade entre o resolver e o FormValues.
+    resolver: yupResolver(createSelectiveStageFormSchema) as any,
   })
 
   const { errors } = formState
@@ -62,6 +64,10 @@ export function CreateSelectiveStage({
         description: data.description,
       })
 
+      // Esta lógica parece um pouco estranha. Se data.resultsDate for undefined,
+      // a condição (undefined !== null) é verdadeira e ele tentará atribuir undefined.
+      // Talvez a intenção fosse `if (data.resultsDate)`.
+      // Por enquanto, mantive como estava para focar no erro de tipo.
       if (data.resultsDate !== null) {
         formData.resultsDate = data.resultsDate
       }

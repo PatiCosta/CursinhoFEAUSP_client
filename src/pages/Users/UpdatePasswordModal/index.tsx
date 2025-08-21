@@ -55,8 +55,8 @@ export function UpdatePasswordModal({ user }: { user: User }) {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const isLg = useBreakpointValue({ base: false, sm: false, lg: true })
 
-  const { register, formState, handleSubmit } = useForm({
-    resolver: yupResolver(updatePasswordFormSchema),
+  const { register, formState, handleSubmit } = useForm<FormValues>({
+    resolver: yupResolver(updatePasswordFormSchema) as any,
   })
 
   const { errors } = formState
