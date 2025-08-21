@@ -33,7 +33,7 @@ const createSelectiveStageFormSchema = Yup.object().shape({
 
 type FormValues = {
   when: string
-  resultsDate: undefined | null | string
+  resultsDate?:  null | string
   description: string
 }
 
@@ -49,7 +49,7 @@ export function CreateSelectiveStage({
   const [isResultsDateUndefined, setIsResultsDateUndefined] = useState(false)
   const isLg = useBreakpointValue({ base: false, sm: false, lg: true })
 
-  const { register, formState, handleSubmit, setValue } = useForm<FormValues>({
+  const { register, formState, handleSubmit, setValue } = useForm({
     resolver: yupResolver(createSelectiveStageFormSchema),
   })
 
