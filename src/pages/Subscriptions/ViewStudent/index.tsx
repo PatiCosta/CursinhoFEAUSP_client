@@ -165,7 +165,7 @@ export function ViewStudent() {
               title="Complemento"
               info={student.complement ? student.complement : 'Não informado'}
             />
-            <InfoBox title="CEP" info={formatCep(student.zipCode)} />
+            <InfoBox title="CEP" info={student.zipCode} />
             <InfoBox title="Cidade" info={student.city} />
             <InfoBox title="Estado" info={student.state} />
           </Grid>

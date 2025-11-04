@@ -19,6 +19,7 @@ import {
   SunHorizon,
   UserCircleGear,
   UsersThree,
+  Ticket, // 1. Importe o ícone do cupom
 } from '@phosphor-icons/react'
 
 import sidebarTopDetailImg from '../../assets/sidebar_top_detail.png'
@@ -226,6 +227,19 @@ export function Nav() {
               />
             }
           />
+
+          {/* 2. Adicione o novo NavButton para Cupons aqui */}
+          <NavButton
+            linkTo="cupons"
+            title="Cupons"
+            icon={
+              <Ticket
+                size={18}
+                color={location.includes('cupons') ? '#EDF2F7' : '#023047'}
+                weight="duotone"
+              />
+            }
+          />
         </VStack>
         <Flex
           alignItems="center"
@@ -269,3 +283,4 @@ export function Nav() {
     </Flex>
   )
 }
+

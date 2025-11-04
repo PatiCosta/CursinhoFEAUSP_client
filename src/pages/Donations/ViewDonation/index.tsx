@@ -149,7 +149,7 @@ export function ViewDonation() {
               title="Complemento"
               info={donation.complement ? donation.complement : 'Não informado'}
             />
-            <InfoBox title="CEP" info={formatCep(donation.zipCode)} />
+            <InfoBox title="CEP" info={donation.zipCode} />
             <InfoBox title="Cidade" info={donation.city} />
             <InfoBox title="Estado" info={donation.state} />
           </Grid>

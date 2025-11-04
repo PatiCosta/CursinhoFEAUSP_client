@@ -1,3 +1,4 @@
+// src/services/api.ts
 import axios, { AxiosError } from 'axios'
 
 import { signOut } from '../hooks/auth'
