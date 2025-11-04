@@ -14,7 +14,6 @@ import {
 import { InfoBox } from '../../../components/ViewPages/InfoBox'
 import { formatCPF } from '../../../utils/cpfUtils'
 import { formatPhone } from '../../../utils/formatPhone'
-import { formatCep } from '../../../utils/cepUtils'
 
 export function ViewDonation() {
   const { id } = useParams()

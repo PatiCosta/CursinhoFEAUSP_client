@@ -15,7 +15,6 @@ import {
 import { InfoBox } from '../../../components/ViewPages/InfoBox'
 import { formatCPF } from '../../../utils/cpfUtils'
 import { formatPhone } from '../../../utils/formatPhone'
-import { formatCep } from '../../../utils/cepUtils'
 import { useStudents } from '../../../hooks/subscriptions'
 
 export function ViewStudent() {
