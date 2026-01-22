@@ -1,11 +1,18 @@
 interface purcharsedSubscriptions {
   schoolClassID: string
-  productID: string
+  productID: string | undefined
   productName: string
+  codigoDesconto: string | null
   paymentMethod: string
   paymentStatus: string
   paymentDate: Date | null
   valuePaid: number
+  matriculaID: string | null
+  
+  txid: string
+  pixStatus: string | undefined
+  pixCopiaECola: string | undefined
+  pixQrCode: string | undefined
 }
 
 export interface Student {
@@ -16,6 +23,8 @@ export interface Student {
   birth: string // ok
   phoneNumber: string // ok
   isPhoneWhatsapp: boolean // ok
+
+  emailResponsavel: string | null // ok
 
   state: string // ok
   city: string // ok

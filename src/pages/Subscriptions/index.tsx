@@ -13,14 +13,17 @@ import {
   Thead,
   Tr,
   useBreakpointValue,
+  IconButton,
+  Tooltip
 } from '@chakra-ui/react'
+import { MagnifyingGlass } from '@phosphor-icons/react'
 import { Pagination } from '../../components/Pagination'
 import { useStudents } from '../../hooks/subscriptions'
-import { useNavigate } from 'react-router-dom'
-import { useEffect, useState } from 'react'
-import { Student } from '../../interfaces/Student.interface'
+import { useNavigate, useLocation } from 'react-router-dom'
+import { useEffect, useState, useMemo } from 'react'
 import { Filter } from './components/Filter'
 import { Export } from './components/Export'
+import api from '../../services/api' 
 
 export function Subscriptions() {
   const {
@@ -32,8 +35,12 @@ export function Subscriptions() {
     loadingList,
   } = useStudents()
   const navigate = useNavigate()
+  const location = useLocation()
   const isLg = useBreakpointValue({ base: false, sm: false, lg: true })
   const [quantityOfFilters, setQuantityOfFilters] = useState(0)
+
+  // ATUALIZADO: Estado para armazenar detalhes da turma (Título e Cor)
+  const [classDetails, setClassDetails] = useState<Record<string, { title: string; color: string }>>({});
 
   useEffect(() => {
     if (location.search !== '') {
@@ -44,11 +51,104 @@ export function Subscriptions() {
     }
   }, [page, location.search])
 
+  // Buscar turmas para preencher nomes e CORES
+  useEffect(() => {
+    api.get('/schoolClass').then(response => {
+        const responseData = response.data;
+        const classesList = responseData?.schoolClassResponse?.schoolClassList || [];
+        
+        // Mapeamos ID -> { Title, Color }
+        const detailsMap: Record<string, { title: string; color: string }> = {};
+        
+        classesList.forEach((cls: any) => {
+            if (cls.id && cls.title) {
+                detailsMap[cls.id] = {
+                    title: cls.title,
+                    // Pega a cor de informations.color ou usa cinza como fallback
+                    color: cls.informations?.color || 'gray.500' 
+                };
+            }
+        });
+        setClassDetails(detailsMap);
+    }).catch(err => console.error("Erro ao buscar turmas:", err));
+  }, []);
+
+  // --- LÓGICA DE TRANSFORMAÇÃO (FLATTEN) COM FILTRO VISUAL ---
+  const subscriptionRows = useMemo(() => {
+    if (!students) return [];
+
+    // Pegamos os filtros ativos da URL para filtrar também as linhas da tabela
+    const searchParams = new URLSearchParams(location.search);
+    const paymentStatusFilter = searchParams.get('paymentStatus');
+    const schoolClassIDFilter = searchParams.get('schoolClassID');
+
+    return students.flatMap(student => {
+      if (!student.purcharsedSubscriptions || student.purcharsedSubscriptions.length === 0) {
+        return [];
+      }
+      
+      return student.purcharsedSubscriptions
+        .filter(sub => {
+            // Se houver filtro de status, esconde as inscrições que não batem
+            if (paymentStatusFilter && sub.paymentStatus !== paymentStatusFilter) {
+                return false;
+            }
+            // Se houver filtro de turma, esconde as inscrições de outras turmas
+            if (schoolClassIDFilter && sub.schoolClassID !== schoolClassIDFilter) {
+                return false;
+            }
+            return true;
+        })
+        .map(subscription => {
+            const details = classDetails[subscription.schoolClassID];
+            
+            // Nome: Tenta do banco, senão pega do mapa, senão fallback
+            const nomeTurma = subscription.productName || details?.title || 'Turma não identificada';
+            
+            // Cor: Pega do mapa (atualizado), senão fallback
+            const corTurma = details?.color || 'gray.500';
+
+            return {
+                studentId: student.id,
+                studentName: student.name,
+                studentEmail: student.email,
+                productName: nomeTurma,
+                classColor: corTurma, // Passamos a cor para a renderização
+                paymentStatus: subscription.paymentStatus,
+                paymentDate: subscription.paymentDate,
+                valuePaid: subscription.valuePaid,
+                matriculaID: subscription.matriculaID,
+                schoolClassID: subscription.schoolClassID
+            };
+        });
+    });
+  }, [students, classDetails, location.search]); // Adicionado location.search nas dependências
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'CONCLUIDA': return 'green'
+      case 'active': return 'blue' 
+      case 'canceled': return 'red'
+      case 'PENDENTE': return 'yellow'
+      default: return 'gray'
+    }
+  }
+
+  const getStatusLabel = (status: string) => {
+    switch (status) {
+        case 'CONCLUIDA': return 'Pago'
+        case 'active': return 'Ativo'
+        case 'canceled': return 'Cancelado'
+        case 'PENDENTE': return 'Pendente'
+        default: return status || 'Desconhecido'
+      }
+  }
+
   return (
-    <PageLayout
+   <PageLayout
       variant="list"
       title="Inscrições"
-      subtitle="Aqui você pode visualizar as inscrições para cada turma"
+      subtitle="Gerencie as inscrições por turma e status de pagamento"
       hasButton
       button={<Export />}
       hasPagination
@@ -64,121 +164,124 @@ export function Subscriptions() {
     >
       <Flex mt={4} alignItems="center" gap={{ base: 2, sm: 2, lg: 4 }}>
         <Filter />
-        <Text fontSize={{ base: 'sm', sm: 'sm', lg: 'md' }}>
+        <Text fontSize={{ base: 'sm', sm: 'sm', lg: 'md' }} color="gray.600">
           {quantityOfFilters === 0
             ? 'Nenhum filtro aplicado'
-            : `${quantityOfFilters} filtro${
-                quantityOfFilters > 1 ? 's' : ''
-              } aplicado${quantityOfFilters > 1 ? 's' : ''}`}
+            : `${quantityOfFilters} filtro${quantityOfFilters > 1 ? 's' : ''} aplicado${quantityOfFilters > 1 ? 's' : ''}`}
         </Text>
       </Flex>
-      <Box w="100%" mt={4}>
+
+      <Box w="100%" mt={6} bg="white" borderRadius="lg" borderWidth="1px" borderColor="gray.200" overflow="hidden">
         <TableContainer>
           <Table variant="simple" size="sm">
-            <Thead bgColor="gray.100">
+            <Thead bgColor="gray.50">
               <Tr>
-                <Th fontSize={{ base: '0.7rem', sm: '0.7rem', lg: 'xs' }}>
-                  Nome
-                </Th>
-                <Th fontSize={{ base: '0.7rem', sm: '0.7rem', lg: 'xs' }}>
-                  E-mail
-                </Th>
-                {isLg && <Th>Turmas de Inscrição</Th>}
+                <Th py={3} fontSize="xs" textTransform="uppercase" color="gray.500">Aluno / E-mail</Th>
+                <Th py={3} fontSize="xs" textTransform="uppercase" color="gray.500">Turma</Th>
+                <Th py={3} fontSize="xs" textTransform="uppercase" color="gray.500">Status</Th>
+                {isLg && <Th py={3} fontSize="xs" textTransform="uppercase" color="gray.500">Data / Valor</Th>}
+                <Th py={3} isNumeric fontSize="xs" textTransform="uppercase" color="gray.500">Ações</Th>
               </Tr>
             </Thead>
             <Tbody>
               {loadingList ? (
-                <>
-                  <Tr>
-                    <Td colSpan={isLg ? 3 : 2}>
-                      <Skeleton height="20px" w="100%" />
-                    </Td>
+                Array.from({ length: 5 }).map((_, i) => (
+                  <Tr key={i}>
+                    <Td><Skeleton height="20px" width="150px" mb={1} /><Skeleton height="15px" width="100px" /></Td>
+                    <Td><Skeleton height="20px" width="120px" /></Td>
+                    <Td><Skeleton height="20px" width="80px" /></Td>
+                    {isLg && <Td><Skeleton height="20px" width="100px" /></Td>}
+                    <Td><Skeleton height="20px" width="30px" /></Td>
                   </Tr>
-                  <Tr>
-                    <Td colSpan={isLg ? 3 : 2}>
-                      <Skeleton height="20px" w="100%" />
-                    </Td>
-                  </Tr>
-                  <Tr>
-                    <Td colSpan={isLg ? 3 : 2}>
-                      <Skeleton height="20px" w="100%" />
-                    </Td>
-                  </Tr>
-                  <Tr>
-                    <Td colSpan={isLg ? 3 : 2}>
-                      <Skeleton height="20px" w="100%" />
-                    </Td>
-                  </Tr>
-                  <Tr>
-                    <Td colSpan={isLg ? 3 : 2}>
-                      <Skeleton height="20px" w="100%" />
-                    </Td>
-                  </Tr>
-                  <Tr>
-                    <Td colSpan={isLg ? 3 : 2}>
-                      <Skeleton height="20px" w="100%" />
-                    </Td>
-                  </Tr>
-                  <Tr>
-                    <Td colSpan={isLg ? 3 : 2}>
-                      <Skeleton height="20px" w="100%" />
-                    </Td>
-                  </Tr>
-                  <Tr>
-                    <Td colSpan={isLg ? 3 : 2}>
-                      <Skeleton height="20px" w="100%" />
-                    </Td>
-                  </Tr>
-                  <Tr>
-                    <Td colSpan={isLg ? 3 : 2}>
-                      <Skeleton height="20px" w="100%" />
-                    </Td>
-                  </Tr>
-                </>
+                ))
+              ) : subscriptionRows.length === 0 ? (
+                <Tr>
+                  <Td colSpan={isLg ? 5 : 4} textAlign="center" py={10} color="gray.500">
+                    Nenhuma inscrição encontrada.
+                  </Td>
+                </Tr>
               ) : (
-                students.map((student: Student) => {
-                  return (
-                    <Tr
-                      key={student.id}
-                      onClick={() => navigate(`/inscricoes/${student.id}`)}
-                      cursor="pointer"
-                      _hover={{ bgColor: 'gray.100' }}
-                    >
-                      <Td
-                        fontSize={{
-                          base: '0.7rem',
-                          sm: '0.7rem',
-                          lg: 'xs',
-                        }}
+                subscriptionRows.map((row, i) => (
+                  <Tr
+                    key={`${row.studentId}-${row.schoolClassID}-index-${i}`}
+                    _hover={{ bgColor: 'gray.50' }}
+                    transition="background 0.2s"
+                  >
+                    {/* Coluna Aluno */}
+                    <Td py={3}>
+                      <Text fontWeight="bold" color="gray.700" fontSize="sm">{row.studentName}</Text>
+                      <Text fontSize="xs" color="gray.500">{row.studentEmail}</Text>
+                    </Td>
+
+                    {/* Coluna Turma (ATUALIZADA COM A BADGE COLORIDA) */}
+                    <Td py={3}>
+                      <Tag 
+                        size="md" 
+                        variant="solid" 
+                        bgColor={row.classColor} // Aplica a cor vinda do banco
+                        color="white" // Texto branco para contraste
+                        borderRadius="md"
+                        px={3}
+                        boxShadow="sm"
+                        whiteSpace="nowrap"
+                        maxWidth="200px"
+                        textOverflow="ellipsis"
+                        overflow="hidden"
                       >
-                        {student.name}
-                      </Td>
-                      <Td
-                        fontSize={{
-                          base: '0.7rem',
-                          sm: '0.7rem',
-                          lg: 'xs',
-                        }}
-                      >
-                        {student.email}
-                      </Td>
-                      {isLg && (
-                        <Td>
-                          {student.purcharsedSubscriptions.map(
-                            (subscription) => (
-                              <Tag
-                                key={subscription.schoolClassID}
-                                bgColor="yellow.400"
-                              >
-                                {subscription.productName}
-                              </Tag>
-                            ),
-                          )}
-                        </Td>
+                        {row.productName}
+                      </Tag>
+                      
+                      {row.matriculaID && (
+                        <Box mt={1}>
+                             <Tag size="sm" variant="solid" colorScheme="blue" borderRadius="md">
+                                {row.matriculaID}
+                             </Tag>
+                        </Box>
                       )}
-                    </Tr>
-                  )
-                })
+                    </Td>
+
+                    {/* Coluna Status */}
+                    <Td py={3}>
+                      <Tag 
+                        size="sm" 
+                        variant="solid" 
+                        colorScheme={getStatusColor(row.paymentStatus)}
+                        borderRadius="md"
+                        px={3}
+                      >
+                        {getStatusLabel(row.paymentStatus)}
+                      </Tag>
+                    </Td>
+
+                    {/* Coluna Data/Valor (Desktop) */}
+                    {isLg && (
+                      <Td py={3}>
+                         <Flex direction="column">
+                            <Text fontSize="xs" color="gray.600">
+                                {row.paymentDate ? new Date(row.paymentDate).toLocaleDateString('pt-BR') : '-'}
+                            </Text>
+                            <Text fontSize="xs" fontWeight="bold" color="gray.500">
+                                {row.valuePaid ? new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(row.valuePaid) : '-'}
+                            </Text>
+                         </Flex>
+                      </Td>
+                    )}
+
+                    {/* Coluna Ações */}
+                    <Td py={3} isNumeric>
+                        <Tooltip label="Ver detalhes do aluno" hasArrow>
+                            <IconButton
+                                aria-label="Ver detalhes"
+                                icon={<MagnifyingGlass weight="bold" />}
+                                size="sm"
+                                variant="ghost"
+                                colorScheme="blue"
+                                onClick={() => navigate(`/inscricoes/${row.studentId}`)}
+                            />
+                        </Tooltip>
+                    </Td>
+                  </Tr>
+                ))
               )}
             </Tbody>
           </Table>

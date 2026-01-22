@@ -26,6 +26,7 @@ import { Button } from '../../../../components/Button'
 import { NameFilter } from './NameFilter'
 import { EmailFilter } from './EmailFilter'
 import { CpfFilter } from './CpfFilter'
+import { PaymentStatusFilter } from './PaymentStatusFilter' // Importe o novo componente
 import { useStudents } from '../../../../hooks/subscriptions'
 
 export interface FilterState {
@@ -33,13 +34,14 @@ export interface FilterState {
   email?: string
   cpf?: string
   schoolClassID?: string
+  paymentStatus?: string // Adicionado
 }
 
 export type HandleAddFilter = ({
   key,
   value,
 }: {
-  key: 'name' | 'cpf' | 'email' | 'schoolClassID'
+  key: 'name' | 'cpf' | 'email' | 'schoolClassID' | 'paymentStatus' // Adicionado
   value: string
 }) => void
 
@@ -59,19 +61,29 @@ export function Filter() {
       ? 'e-mail'
       : val === 'schoolClassID'
       ? 'turma'
+      : val === 'paymentStatus'
+      ? 'status' // Adicionado
       : 'cpf'
   }
 
-  // const formatsearchValue = ({ key, val }: { key: string; val: string }) => {
-  // if (key === 'paymentStatus') {
-  //   return val === 'active'
-  //     ? 'Confirmado'
-  //     : val === 'canceled'
-  //     ? 'Cancelado'
-  //     : 'Sem informação ainda'
-  // }
-  // return val
-  // }
+  // Função descomentada e atualizada
+  const formatsearchValue = ({ key, val }: { key: string; val: string }) => {
+    if (key === 'paymentStatus') {
+      switch (val) {
+        case 'active':
+          return 'Ativo (Assinatura)'
+        case 'CONCLUIDA':
+          return 'Confirmado'
+        case 'PENDENTE':
+          return 'Pendente'
+        case 'canceled':
+          return 'Cancelado'
+        default:
+          return val
+      }
+    }
+    return val
+  }
 
   const isFilterDisabled = (key: string) => {
     return Object.entries(search).some((entry) => entry[0] === key)
@@ -103,6 +115,7 @@ export function Filter() {
 
   const handleAddFilter = useCallback<HandleAddFilter>(
     ({ key, value }) => {
+      console.log('Adding filter:', key, value) // Log adicionado para depuração
       if (
         Object.keys(search).length !== 0 &&
         Object.keys(search).find((searchKey) => searchKey === key) !== undefined
@@ -110,21 +123,7 @@ export function Filter() {
         return
       }
 
-      if (key === 'name') {
-        setSearch({ ...search, name: value })
-      }
-
-      if (key === 'cpf') {
-        setSearch({ ...search, cpf: value })
-      }
-
-      if (key === 'email') {
-        setSearch({ ...search, email: value })
-      }
-
-      if (key === 'schoolClassID') {
-        setSearch({ ...search, schoolClassID: value })
-      }
+      setSearch((prev) => ({ ...prev, [key]: value }))
     },
     [search],
   )
@@ -135,7 +134,8 @@ export function Filter() {
         key === 'name' ||
         key === 'cpf' ||
         key === 'email' ||
-        key === 'schoolClassID'
+        key === 'schoolClassID' ||
+        key === 'paymentStatus' // Adicionado
       ) {
         const entries = Object.entries(search)
         const filteredEntries = entries.filter((entry) => entry[0] !== key)
@@ -171,7 +171,7 @@ export function Filter() {
             <Text fontSize={16}>
               Você está visualizando os filtros aplicados na lista de doações.
             </Text>
-            <Menu>
+            <Menu closeOnSelect={false}>
               <MenuButton
                 as={ChakraButton}
                 colorScheme="teal"
@@ -197,10 +197,11 @@ export function Filter() {
                   handleAddFilter={handleAddFilter}
                   isDisabled={isFilterDisabled('cpf')}
                 />
-                {/* <PaymentStatusFilter
+                {/* Adicionado o componente de filtro de status */}
+                <PaymentStatusFilter
                   handleAddFilter={handleAddFilter}
-                  isDisabled={isFilterDisabled('schoolClassID')}
-                /> */}
+                  isDisabled={isFilterDisabled('paymentStatus')}
+                />
               </MenuList>
             </Menu>
             <Flex direction="column" alignItems="start" gap={2} mt={8}>
@@ -215,6 +216,7 @@ export function Filter() {
                     borderRadius="full"
                     variant="solid"
                     colorScheme="blue"
+                    size="lg"
                   >
                     <TagLabel>
                       <Highlight
@@ -225,11 +227,10 @@ export function Filter() {
                           textTransform: 'uppercase',
                         }}
                       >
-                        {/* {`${formatSearchKey(value[0])}: ${formatsearchValue({
+                        {`${formatSearchKey(value[0])}: ${formatsearchValue({
                           key: value[0],
                           val: value[1],
-                        })}`} */}
-                        {`${formatSearchKey(value[0])}: ${value[1]}`}
+                        })}`}
                       </Highlight>
                     </TagLabel>
                     <TagCloseButton
@@ -246,8 +247,8 @@ export function Filter() {
               bgVariant="ghost"
               text="Limpar filtros"
               onClick={() => {
-                onClose()
                 handleClearSearch()
+                onClose()
               }}
               mr={4}
               isDisabled={Object.keys(search).length <= 0}
@@ -256,8 +257,8 @@ export function Filter() {
               bgVariant="green"
               text="Salvar"
               onClick={() => {
-                onClose()
                 handleSearch()
+                onClose()
               }}
             />
           </ModalFooter>
