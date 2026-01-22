@@ -51,7 +51,7 @@ export function Filter() {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [search, setSearch] = useState<FilterState>({})
 
-  const { changePage, list, page } = useDonations()
+  const { changePage, list } = useDonations()
 
   const location = useLocation()
   const navigate = useNavigate()
@@ -79,11 +79,18 @@ export function Filter() {
     }
 
     if (key === 'paymentStatus') {
-      return val === 'active'
-        ? 'Confirmado'
-        : val === 'canceled'
-        ? 'Cancelado'
-        : 'Sem informação ainda'
+      switch (val) {
+        case 'active':
+          return 'Ativo (Assinatura)'
+        case 'CONCLUIDA':
+          return 'Confirmado'
+        case 'PENDENTE':
+          return 'Pendente'
+        case 'canceled':
+          return 'Cancelado'
+        default:
+          return val
+      }
     }
     return val
   }
@@ -95,16 +102,22 @@ export function Filter() {
   useEffect(() => {
     if (location.search !== '') {
       const query = Object.fromEntries(new URLSearchParams(location.search))
-      list(query)
       setSearch(query)
+      // Nota: O list(query) foi removido daqui para evitar double fetch se o componente pai já gerencia isso, 
+      // mas se for necessário manter a lógica original:
+      // list(query)
     } else {
-      list()
+      // list()
+      setSearch({})
     }
-  }, [list, page, location.search])
+  }, [location.search])
 
   const handleSearch = useCallback(() => {
     if (isEmptyObject(search)) {
-      return
+        // Se busca vazia, limpa
+        navigate({ search: '' }, { replace: true })
+        list()
+        return
     }
 
     const searchString = '?' + new URLSearchParams(search as any).toString()
@@ -113,8 +126,11 @@ export function Filter() {
       { search: searchString },
       { replace: true, state: { isActive: true } },
     )
+    // O useEffect ou o hook useDonations deve reagir à mudança de URL
+    // Se não, chamamos list(search) aqui.
+    list(search) 
     changePage(1)
-  }, [search, changePage, navigate])
+  }, [search, changePage, navigate, list])
 
   const handleAddValueFilter = useCallback(
     ({ initValue, endValue }: { initValue: string; endValue: string }) => {
@@ -131,43 +147,17 @@ export function Filter() {
       ) {
         return
       }
-
-      if (key === 'name') {
-        setSearch({ ...search, name: value })
-      }
-
-      if (key === 'cpf') {
-        setSearch({ ...search, cpf: value })
-      }
-
-      if (key === 'email') {
-        setSearch({ ...search, email: value })
-      }
-
-      if (key === 'paymentStatus') {
-        setSearch({ ...search, paymentStatus: value })
-      }
+      setSearch((prev) => ({ ...prev, [key]: value }))
     },
     [search],
   )
 
   const handleDeleteFilter = useCallback(
     (key: string) => {
-      if (
-        key === 'name' ||
-        key === 'cpf' ||
-        key === 'email' ||
-        key === 'paymentStatus' ||
-        key === 'initValue' ||
-        key === 'endValue'
-      ) {
-        const entries = Object.entries(search)
-        const filteredEntries = entries.filter((entry) => entry[0] !== key)
-
-        const newSearch = Object.fromEntries(filteredEntries)
-
+        const newSearch = { ...search }
+        // @ts-ignore
+        delete newSearch[key]
         setSearch(newSearch)
-      }
     },
     [search],
   )
@@ -175,7 +165,8 @@ export function Filter() {
   const handleClearSearch = useCallback(() => {
     navigate({ search: '' }, { replace: true, state: { isActive: true } })
     setSearch({})
-  }, [navigate])
+    list({})
+  }, [navigate, list])
 
   return (
     <>
@@ -189,13 +180,15 @@ export function Filter() {
       <Modal isOpen={isOpen} onClose={onClose} size="lg">
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Filtros</ModalHeader>
+          <ModalHeader>Exportar em excel</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <Text fontSize={16}>
-              Você está visualizando os filtros aplicados na lista de doações.
+              {Object.keys(search).length <= 0
+                ? 'Você ainda não selecionou nenhum filtro.'
+                : 'Filtros aplicados:'}
             </Text>
-            <Menu>
+            <Menu closeOnSelect={false}>
               <MenuButton
                 as={ChakraButton}
                 colorScheme="teal"
@@ -221,6 +214,7 @@ export function Filter() {
                   handleAddFilter={handleAddFilter}
                   isDisabled={isFilterDisabled('cpf')}
                 />
+                {/* O novo componente de filtro */}
                 <PaymentStatusFilter
                   handleAddFilter={handleAddFilter}
                   isDisabled={isFilterDisabled('paymentStatus')}
@@ -235,17 +229,14 @@ export function Filter() {
               </MenuList>
             </Menu>
             <Flex direction="column" alignItems="start" gap={2} mt={8}>
-              {Object.keys(search).length <= 0 ? (
-                <Text fontSize={16} fontWeight="bold" color="gray.700">
-                  Ainda não foi aplicado nenhum filtro
-                </Text>
-              ) : (
+              {Object.keys(search).length > 0 &&
                 Object.entries(search).map((value) => (
                   <Tag
                     key={value[0]}
                     borderRadius="full"
                     variant="solid"
                     colorScheme="blue"
+                    size="lg"
                   >
                     <TagLabel>
                       <Highlight
@@ -258,7 +249,7 @@ export function Filter() {
                       >
                         {`${formatSearchKey(value[0])}: ${formatsearchValue({
                           key: value[0],
-                          val: value[1],
+                          val: value[1] as string,
                         })}`}
                       </Highlight>
                     </TagLabel>
@@ -266,8 +257,7 @@ export function Filter() {
                       onClick={() => handleDeleteFilter(value[0])}
                     />
                   </Tag>
-                ))
-              )}
+                ))}
             </Flex>
           </ModalBody>
 
@@ -276,18 +266,18 @@ export function Filter() {
               bgVariant="ghost"
               text="Limpar filtros"
               onClick={() => {
-                onClose()
                 handleClearSearch()
+                onClose()
               }}
               mr={4}
               isDisabled={Object.keys(search).length <= 0}
             />
             <Button
               bgVariant="green"
-              text="Salvar"
+              text="Filtrar"
               onClick={() => {
-                onClose()
                 handleSearch()
+                onClose()
               }}
             />
           </ModalFooter>

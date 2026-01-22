@@ -126,12 +126,17 @@ export function ViewStudent() {
               title="Número de telefone"
               info={formatPhone(student.phoneNumber)}
             />
-            {student.isPhoneWhatsapp ?? (
+            {/* CORREÇÃO AQUI (de ?? para &&) */}
+            {student.isPhoneWhatsapp && (
               <Link href={wppLink} isExternal>
                 <WhatsappLogo size={16} color="#075e54" weight="duotone" />{' '}
                 Abrir whatsapp
               </Link>
             )}
+            <InfoBox
+              title="Email do Responsável"
+              info={student.emailResponsavel ? student.emailResponsavel : 'N/A'}
+            />
           </Grid>
           <Subtitle
             size="lg"
@@ -234,17 +239,30 @@ export function ViewStudent() {
                 {subscription.productName}
               </Subtitle>
               <Grid
-                templateColumns={{ base: '1fr', lg: '1fr 1fr' }}
+                // MUDANÇA: Ajustado para 3 colunas
+                templateColumns={{ base: '1fr', lg: '1fr 1fr 1fr' }}
                 mt={4}
                 gap={{ base: 4, lg: 8 }}
               >
+                {/* NOVO CAMPO: ID Matrícula */}
                 <InfoBox
-                  info={subscription.paymentMethod}
-                  title="Método de pagamento"
+                  info={
+                    subscription.matriculaID
+                      ? subscription.matriculaID
+                      : 'Aguardando Pagamento'
+                  }
+                  title="ID Matrícula"
                 />
                 <InfoBox
                   info={subscription.paymentStatus}
                   title="Status do pagamento"
+                />
+                <InfoBox
+                  info={new Intl.NumberFormat('pt-BR', {
+                    style: 'currency',
+                    currency: 'BRL',
+                  }).format(subscription.valuePaid)}
+                  title="Valor pago"
                 />
                 <InfoBox
                   info={
@@ -256,12 +274,18 @@ export function ViewStudent() {
                   }
                   title="Data do pagamento"
                 />
+                {/* NOVO CAMPO: Cód. Desconto */}
                 <InfoBox
-                  info={new Intl.NumberFormat('pt-BR', {
-                    style: 'currency',
-                    currency: 'BRL',
-                  }).format(subscription.valuePaid)}
-                  title="Valor pago"
+                  info={
+                    subscription.codigoDesconto
+                      ? subscription.codigoDesconto
+                      : 'Nenhum'
+                  }
+                  title="Cód. Desconto"
+                />
+                <InfoBox
+                  info={subscription.paymentMethod}
+                  title="Método de pagamento"
                 />
               </Grid>
             </Box>

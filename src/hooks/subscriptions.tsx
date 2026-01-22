@@ -6,7 +6,6 @@ import {
   useReducer,
   useState,
 } from 'react'
-// import { useToast } from '@chakra-ui/react'
 
 import api from '../services/api'
 import { studentsReducer } from './reducers/students/reducer'
@@ -22,6 +21,7 @@ interface listProps {
   email?: string
   cpf?: string
   schoolClassID?: string
+  paymentStatus?: string // ADICIONADO
 }
 
 interface StudentsContextType {
@@ -40,7 +40,6 @@ const StudentsContext = createContext({} as StudentsContextType)
 export function StudentsProvider({ children }: { children: ReactNode }) {
   const [loadingList, setIsLoadingList] = useState(false)
   const isLg = useBreakpointValue({ base: false, sm: false, lg: true })
-  // const toast = useToast()
 
   const [studentsState, dispatch] = useReducer(studentsReducer, {
     students: [],
@@ -80,6 +79,11 @@ export function StudentsProvider({ children }: { children: ReactNode }) {
         params = Object.assign(params, { schoolClassID: props.schoolClassID })
       }
 
+      // CORREÇÃO: Adicionado envio do paymentStatus para a API
+      if (props?.paymentStatus) {
+        params = Object.assign(params, { paymentStatus: props.paymentStatus })
+      }
+
       await api
         .get('/students', { params })
         .then((response) => {
@@ -114,6 +118,11 @@ export function StudentsProvider({ children }: { children: ReactNode }) {
 
     if (props?.schoolClassID) {
       params = Object.assign(params, { schoolClassID: props.schoolClassID })
+    }
+
+    // CORREÇÃO: Adicionado envio do paymentStatus para o Excel também
+    if (props?.paymentStatus) {
+      params = Object.assign(params, { paymentStatus: props.paymentStatus })
     }
 
     await api
