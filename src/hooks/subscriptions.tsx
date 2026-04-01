@@ -28,6 +28,7 @@ interface StudentsContextType {
   students: Student[]
   list: (props?: listProps) => void
   excelExport: (props?: listProps) => void
+  confirmPayment: (studentId: string, txid: string) => Promise<{ matriculaID: string }>
   page: number
   changePage: (page: number) => void
   registersPerPage: number
@@ -101,6 +102,11 @@ export function StudentsProvider({ children }: { children: ReactNode }) {
     [page, registersPerPage],
   )
 
+  const confirmPayment = useCallback(async (studentId: string, txid: string) => {
+    const response = await api.post(`/inscriptions/${studentId}/confirm`, { txid })
+    return response.data as { matriculaID: string }
+  }, [])
+
   const excelExport = useCallback(async (props?: listProps) => {
     let params = {}
 
@@ -143,6 +149,7 @@ export function StudentsProvider({ children }: { children: ReactNode }) {
         students,
         list,
         excelExport,
+        confirmPayment,
         page,
         changePage,
         registersPerPage,
