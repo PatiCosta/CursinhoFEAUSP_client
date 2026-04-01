@@ -1,7 +1,14 @@
 import { useNavigate, useParams } from 'react-router-dom'
 import { PageLayout } from '../../../layouts/PageLayout'
-import { useEffect } from 'react'
-import { Box, Grid, Link, useBreakpointValue } from '@chakra-ui/react'
+import { useEffect, useState } from 'react'
+import {
+  Box,
+  Button,
+  Grid,
+  Link,
+  useBreakpointValue,
+  useToast,
+} from '@chakra-ui/react'
 import { Subtitle } from '../../../components/ViewPages/Subtitle'
 import {
   ChatsCircle,
@@ -19,9 +26,39 @@ import { useStudents } from '../../../hooks/subscriptions'
 
 export function ViewStudent() {
   const { id } = useParams()
-  const { students } = useStudents()
+  const { students, confirmPayment, list } = useStudents()
   const navigate = useNavigate()
   const isLg = useBreakpointValue({ base: false, sm: false, lg: true })
+  const toast = useToast()
+  const [confirmingTxid, setConfirmingTxid] = useState<string | null>(null)
+
+  async function handleConfirmPayment(txid: string) {
+    if (!id) return
+    setConfirmingTxid(txid)
+    try {
+      const { matriculaID } = await confirmPayment(id, txid)
+      toast({
+        title: 'Inscrição confirmada!',
+        description: `Matrícula ${matriculaID} gerada e e-mail de confirmação enviado.`,
+        status: 'success',
+        duration: 6000,
+        isClosable: true,
+      })
+      await list()
+    } catch (err: any) {
+      const message =
+        err?.response?.data?.error ?? 'Erro ao confirmar. Tente novamente.'
+      toast({
+        title: 'Erro ao confirmar pagamento',
+        description: message,
+        status: 'error',
+        duration: 6000,
+        isClosable: true,
+      })
+    } finally {
+      setConfirmingTxid(null)
+    }
+  }
 
   const student = students.find((s) => s.id === id)
   const wppLink = student ? `https://wa.me/55${student.phoneNumber}` : '/'
@@ -217,79 +254,96 @@ export function ViewStudent() {
           >
             Inscrições
           </Subtitle>
-          {student.purcharsedSubscriptions.map((subscription) => (
-            <Box
-              ml={{ base: 6, lg: 9 }}
-              mt={{ base: 6, lg: 8 }}
-              key={subscription.schoolClassID}
-            >
-              <Subtitle
-                size="sm"
-                icon={
-                  <UsersThree
-                    size={isLg ? 32 : 24}
-                    color="#E9C46A"
-                    weight="duotone"
+          {student.purcharsedSubscriptions.map((subscription) => {
+            const isPending =
+              subscription.paymentStatus !== 'CONCLUIDA' &&
+              subscription.paymentStatus !== 'CONCLUÍDA'
+            const isConfirming = confirmingTxid === subscription.txid
+
+            return (
+              <Box
+                ml={{ base: 6, lg: 9 }}
+                mt={{ base: 6, lg: 8 }}
+                key={subscription.schoolClassID + subscription.txid}
+              >
+                <Subtitle
+                  size="sm"
+                  icon={
+                    <UsersThree
+                      size={isLg ? 32 : 24}
+                      color="#E9C46A"
+                      weight="duotone"
+                    />
+                  }
+                  lineColor="yellow.400"
+                  justifyContent="start"
+                  gap={7}
+                >
+                  {subscription.productName}
+                </Subtitle>
+                <Grid
+                  templateColumns={{ base: '1fr', lg: '1fr 1fr 1fr' }}
+                  mt={4}
+                  gap={{ base: 4, lg: 8 }}
+                >
+                  <InfoBox
+                    info={
+                      subscription.matriculaID
+                        ? subscription.matriculaID
+                        : 'Aguardando Pagamento'
+                    }
+                    title="ID Matrícula"
                   />
-                }
-                lineColor="yellow.400"
-                justifyContent="start"
-                gap={7}
-              >
-                {subscription.productName}
-              </Subtitle>
-              <Grid
-                // MUDANÇA: Ajustado para 3 colunas
-                templateColumns={{ base: '1fr', lg: '1fr 1fr 1fr' }}
-                mt={4}
-                gap={{ base: 4, lg: 8 }}
-              >
-                {/* NOVO CAMPO: ID Matrícula */}
-                <InfoBox
-                  info={
-                    subscription.matriculaID
-                      ? subscription.matriculaID
-                      : 'Aguardando Pagamento'
-                  }
-                  title="ID Matrícula"
-                />
-                <InfoBox
-                  info={subscription.paymentStatus}
-                  title="Status do pagamento"
-                />
-                <InfoBox
-                  info={new Intl.NumberFormat('pt-BR', {
-                    style: 'currency',
-                    currency: 'BRL',
-                  }).format(subscription.valuePaid)}
-                  title="Valor pago"
-                />
-                <InfoBox
-                  info={
-                    subscription.paymentDate
-                      ? new Intl.DateTimeFormat('pt-BR').format(
-                          new Date(subscription.paymentDate),
-                        )
-                      : 'Não informado'
-                  }
-                  title="Data do pagamento"
-                />
-                {/* NOVO CAMPO: Cód. Desconto */}
-                <InfoBox
-                  info={
-                    subscription.codigoDesconto
-                      ? subscription.codigoDesconto
-                      : 'Nenhum'
-                  }
-                  title="Cód. Desconto"
-                />
-                <InfoBox
-                  info={subscription.paymentMethod}
-                  title="Método de pagamento"
-                />
-              </Grid>
-            </Box>
-          ))}
+                  <InfoBox
+                    info={subscription.paymentStatus}
+                    title="Status do pagamento"
+                  />
+                  <InfoBox
+                    info={new Intl.NumberFormat('pt-BR', {
+                      style: 'currency',
+                      currency: 'BRL',
+                    }).format(subscription.valuePaid)}
+                    title="Valor pago"
+                  />
+                  <InfoBox
+                    info={
+                      subscription.paymentDate
+                        ? new Intl.DateTimeFormat('pt-BR').format(
+                            new Date(subscription.paymentDate),
+                          )
+                        : 'Não informado'
+                    }
+                    title="Data do pagamento"
+                  />
+                  <InfoBox
+                    info={
+                      subscription.codigoDesconto
+                        ? subscription.codigoDesconto
+                        : 'Nenhum'
+                    }
+                    title="Cód. Desconto"
+                  />
+                  <InfoBox
+                    info={subscription.paymentMethod}
+                    title="Método de pagamento"
+                  />
+                </Grid>
+
+                {isPending && (
+                  <Button
+                    mt={4}
+                    colorScheme="yellow"
+                    size="sm"
+                    isLoading={isConfirming}
+                    loadingText="Confirmando..."
+                    onClick={() => handleConfirmPayment(subscription.txid)}
+                  >
+                    Confirmar pagamento manualmente
+                  </Button>
+                )}
+              </Box>
+            )
+          })}
         </Box>
       </PageLayout>
     )
