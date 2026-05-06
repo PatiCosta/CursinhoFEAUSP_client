@@ -63,10 +63,7 @@ export function UpdatePasswordModal({ user }: { user: User }) {
 
   const handleUpdatePassword = useCallback(
     async (data: FormValues) => {
-      const formData = Object.assign({
-        password: data.password,
-      })
-      await updatePassword({ password: formData, id: user.id })
+      await updatePassword({ password: data.password, id: user.id })
       onClose()
     },
     [updatePassword, onClose, user.id],

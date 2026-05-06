@@ -169,7 +169,7 @@ export function Filter() {
           <ModalCloseButton />
           <ModalBody>
             <Text fontSize={16}>
-              Você está visualizando os filtros aplicados na lista de doações.
+              Você está visualizando os filtros aplicados na lista de inscrições.
             </Text>
             <Menu closeOnSelect={false}>
               <MenuButton

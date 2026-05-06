@@ -15,6 +15,7 @@ import { Button } from '../../../../components/Button'
 import { FileXls } from '@phosphor-icons/react'
 import { IconButton } from '../../../../components/IconButton'
 import { useEffect, useState } from 'react'
+import { useLocation } from 'react-router-dom'
 import { useStudents } from '../../../../hooks/subscriptions'
 
 export interface FilterState {
@@ -41,14 +42,16 @@ export function Export() {
   const [search, setSearch] = useState<FilterState>({})
   const [isExporting, setIsExporting] = useState(false)
 
+  const { search: locationSearch } = useLocation()
+
   useEffect(() => {
-    if (location.search !== '') {
-      const query = Object.fromEntries(new URLSearchParams(location.search))
+    if (locationSearch !== '') {
+      const query = Object.fromEntries(new URLSearchParams(locationSearch))
       setSearch(query)
     } else {
       setSearch({})
     }
-  }, [location.search])
+  }, [locationSearch])
 
   return (
     <>
@@ -84,7 +87,7 @@ export function Export() {
             <Text fontSize={16}>
               {Object.keys(search).length <= 0
                 ? 'Você ainda não selecionou nenhum filtro. Por favor selecione os filtros desejados para poder exportar.'
-                : 'Você irá exportar em excel a lista de doações com os filtros abaixo:'}
+                : 'Você irá exportar em excel a lista de inscrições com os filtros abaixo:'}
             </Text>
             <Flex direction="column" alignItems="start" gap={2} mt={8}>
               {Object.keys(search).length > 0 &&
@@ -104,14 +107,17 @@ export function Export() {
           </ModalBody>
 
           <ModalFooter>
-            {Object.keys(search).length >= 0 && (
+            {Object.keys(search).length > 0 && (
               <Button
                 bgVariant="green"
                 text="Exportar"
-                onClick={() => {
+                onClick={async () => {
                   setIsExporting(true)
-                  excelExport(search)
-                  setIsExporting(false)
+                  try {
+                    await excelExport(search)
+                  } finally {
+                    setIsExporting(false)
+                  }
                 }}
                 mr={4}
                 isLoading={isExporting}

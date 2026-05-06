@@ -10,7 +10,7 @@ import {
   Spinner,
 } from '@chakra-ui/react'
 import { CheckCircle, PencilSimpleLine, XCircle } from '@phosphor-icons/react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 interface EditableProps {
   value: string
@@ -20,6 +20,10 @@ interface EditableProps {
 
 export function Editable({ value, onSave, loading }: EditableProps) {
   const [editableValue, setEditableValue] = useState(value)
+
+  useEffect(() => {
+    setEditableValue(value)
+  }, [value])
 
   function EditableControls() {
     const {
@@ -73,7 +77,7 @@ export function Editable({ value, onSave, loading }: EditableProps) {
       display="flex"
       alignItems="center"
       onSubmit={() => {
-        onSave(editableValue)
+        if (editableValue !== value) onSave(editableValue)
       }}
     >
       <EditablePreview />

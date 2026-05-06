@@ -110,7 +110,7 @@ export function ViewDonation() {
               title="Número de telefone"
               info={formatPhone(donation.phoneNumber)}
             />
-            {donation.isPhoneWhatsapp ?? (
+            {donation.isPhoneWhatsapp && (
               <Link href={wppLink} isExternal>
                 <WhatsappLogo size={16} color="#075e54" weight="duotone" />{' '}
                 Abrir whatsapp

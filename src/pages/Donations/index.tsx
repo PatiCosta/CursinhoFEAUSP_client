@@ -17,7 +17,7 @@ import { Pagination } from '../../components/Pagination'
 import { useDonations } from '../../hooks/donations'
 import { Donation } from '../../interfaces/Donation.interface'
 import { Filter } from './components/Filter'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { Export } from './components/Export'
 
@@ -34,14 +34,16 @@ export function Donations() {
   const isLg = useBreakpointValue({ base: false, sm: false, lg: true })
   const [quantityOfFilters, setQuantityOfFilters] = useState(0)
 
+  const { search } = useLocation()
+
   useEffect(() => {
-    if (location.search !== '') {
-      const query = Object.fromEntries(new URLSearchParams(location.search))
+    if (search !== '') {
+      const query = Object.fromEntries(new URLSearchParams(search))
       setQuantityOfFilters(Object.entries(query).length)
     } else {
       setQuantityOfFilters(0)
     }
-  }, [page, location.search])
+  }, [page, search])
 
   return (
     <PageLayout
