@@ -36,11 +36,12 @@ const InputBase: ForwardRefRenderFunction<HTMLInputElement, InputBaseProps> = (
   return (
     <FormControl isInvalid={!!error || isInvalid}>
       <Text
-        fontSize={12}
-        color="gray.500"
-        fontWeight="light"
-        letterSpacing={0.5}
-        mb={-1}
+        fontSize={11}
+        color="gray.400"
+        fontWeight="semibold"
+        letterSpacing={0.8}
+        textTransform="uppercase"
+        mb={1}
       >
         {placeholder}
       </Text>

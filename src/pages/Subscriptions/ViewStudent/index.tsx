@@ -92,10 +92,10 @@ export function ViewStudent() {
             Informações gerais
           </Subtitle>
           <Grid mt={4} templateColumns={{ base: '1fr', lg: '1fr 1fr 1fr' }} gap={4}>
-            <InfoBox title="Nome" info={student.name} />
+            <InfoBox title="Nome" info={student.name} copyValue={student.name} />
             <InfoBox title="Gênero" info={student.gender || 'Não informado'} />
             <InfoBox title="Data de nascimento" info={student.birth} />
-            <InfoBox title="CPF" info={formatCPF(student.cpf)} />
+            <InfoBox title="CPF" info={formatCPF(student.cpf)} copyValue={student.cpf} />
             <InfoBox title="RG / UF de emissão" info={student.rg ? `${student.rg} / ${student.ufrg}` : 'Não informado'} />
             <InfoBox title="Ex-aluno?" info={student.exStudent} />
             <InfoBox title="Como nos conheceu?" info={student.metUsMethod || 'Não informado'} />
@@ -117,7 +117,7 @@ export function ViewStudent() {
             Contato
           </Subtitle>
           <Grid mt={4} templateColumns={{ base: '1fr', lg: '1fr 1fr 1fr' }} gap={4}>
-            <InfoBox title="E-mail" info={student.email} />
+            <InfoBox title="E-mail" info={student.email} copyValue={student.email} />
             <InfoBox title="Telefone" info={formatPhone(student.phoneNumber)} />
             <InfoBox title="E-mail do responsável" info={student.emailResponsavel || 'N/A'} />
             {student.isPhoneWhatsapp && (
@@ -224,6 +224,7 @@ export function ViewStudent() {
                 <InfoBox
                   title="ID Matrícula"
                   info={subscription.matriculaID || 'Aguardando Pagamento'}
+                  copyValue={subscription.matriculaID || undefined}
                 />
                 <InfoBox title="Status do pagamento" info={subscription.paymentStatus} />
                 <InfoBox

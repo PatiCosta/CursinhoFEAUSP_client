@@ -2,6 +2,7 @@ import { PageLayout } from '../../layouts/PageLayout'
 import {
   Box,
   Flex,
+  Grid,
   Skeleton,
   Table,
   TableContainer,
@@ -17,7 +18,7 @@ import {
   Tooltip,
   VStack,
 } from '@chakra-ui/react'
-import { MagnifyingGlass, UsersThree } from '@phosphor-icons/react'
+import { CheckCircle, MagnifyingGlass, UsersThree, Warning } from '@phosphor-icons/react'
 import { Pagination } from '../../components/Pagination'
 import { useStudents } from '../../hooks/subscriptions'
 import { useCourses } from '../../hooks/courses'
@@ -110,6 +111,12 @@ export function Subscriptions() {
     });
   }, [students, classDetails, location.search]); // Adicionado location.search nas dependências
 
+  const stats = useMemo(() => ({
+    total: subscriptionRows.length,
+    confirmed: subscriptionRows.filter(r => r.paymentStatus === 'CONCLUIDA' || r.paymentStatus === 'CONCLUÍDA').length,
+    pending: subscriptionRows.filter(r => r.paymentStatus === 'PENDENTE').length,
+  }), [subscriptionRows])
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'CONCLUIDA': return 'green'
@@ -148,12 +155,39 @@ export function Subscriptions() {
         />
       }
     >
+      {/* Stats bar */}
+      {!loadingList && (
+        <Grid templateColumns="repeat(3, 1fr)" gap={3} mt={4}>
+          <Box bg="white" borderRadius="xl" p={4} boxShadow="card" borderLeft="4px solid" borderLeftColor="brand.blue">
+            <Text fontSize="10px" color="gray.400" fontWeight="semibold" textTransform="uppercase" letterSpacing={1} mb={1}>Total</Text>
+            <Flex align="center" gap={2}>
+              <Text fontSize="2xl" fontWeight="bold" color="brand.blue" lineHeight={1}>{stats.total}</Text>
+              <UsersThree size={20} color="#2a255a" weight="duotone" style={{ opacity: 0.4 }} />
+            </Flex>
+          </Box>
+          <Box bg="white" borderRadius="xl" p={4} boxShadow="card" borderLeft="4px solid" borderLeftColor="green.400">
+            <Text fontSize="10px" color="gray.400" fontWeight="semibold" textTransform="uppercase" letterSpacing={1} mb={1}>Confirmados</Text>
+            <Flex align="center" gap={2}>
+              <Text fontSize="2xl" fontWeight="bold" color="green.600" lineHeight={1}>{stats.confirmed}</Text>
+              <CheckCircle size={20} color="#48BB78" weight="duotone" style={{ opacity: 0.5 }} />
+            </Flex>
+          </Box>
+          <Box bg="white" borderRadius="xl" p={4} boxShadow="card" borderLeft="4px solid" borderLeftColor="yellow.400">
+            <Text fontSize="10px" color="gray.400" fontWeight="semibold" textTransform="uppercase" letterSpacing={1} mb={1}>Pendentes</Text>
+            <Flex align="center" gap={2}>
+              <Text fontSize="2xl" fontWeight="bold" color="yellow.600" lineHeight={1}>{stats.pending}</Text>
+              <Warning size={20} color="#D69E2E" weight="duotone" style={{ opacity: 0.5 }} />
+            </Flex>
+          </Box>
+        </Grid>
+      )}
+
       <Flex mt={4} alignItems="center" gap={{ base: 2, sm: 2, lg: 4 }}>
         <Filter />
-        <Text fontSize={{ base: 'sm', sm: 'sm', lg: 'md' }} color="gray.600">
+        <Text fontSize={{ base: 'sm', sm: 'sm', lg: 'md' }} color="gray.500">
           {quantityOfFilters === 0
-            ? 'Nenhum filtro aplicado'
-            : `${quantityOfFilters} filtro${quantityOfFilters > 1 ? 's' : ''} aplicado${quantityOfFilters > 1 ? 's' : ''}`}
+            ? 'Sem filtros ativos'
+            : `${quantityOfFilters} filtro${quantityOfFilters > 1 ? 's' : ''} ativo${quantityOfFilters > 1 ? 's' : ''}`}
         </Text>
       </Flex>
 

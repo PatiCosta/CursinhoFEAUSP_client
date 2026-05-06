@@ -1,5 +1,7 @@
 import {
+  Box,
   Button,
+  Flex,
   FormControl,
   FormErrorMessage,
   FormLabel,
@@ -13,9 +15,11 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  Text,
   useToast,
   VStack,
 } from '@chakra-ui/react';
+import { Ticket } from '@phosphor-icons/react';
 import { useForm } from 'react-hook-form';
 import api from '../../services/api'; // Usa o seu api.ts
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -86,10 +90,26 @@ export function CreateCouponModal({ isOpen, onClose, onSuccess }: CreateCouponMo
 
   return (
     <Modal isOpen={isOpen} onClose={handleClose} isCentered>
-      <ModalOverlay />
-      <ModalContent as="form" onSubmit={handleSubmit(handleCreateCoupon)}>
-        <ModalHeader>Criar Novo Cupom</ModalHeader>
-        <ModalCloseButton />
+      <ModalOverlay backdropFilter="blur(2px)" />
+      <ModalContent
+        as="form"
+        onSubmit={handleSubmit(handleCreateCoupon)}
+        borderTop="4px solid"
+        borderTopColor="brand.blue"
+        borderTopRadius="xl"
+      >
+        <ModalHeader pb={2}>
+          <Flex align="center" gap={3}>
+            <Box bg="brand.blueLight" p={2} borderRadius="md">
+              <Ticket size={20} color="#2a255a" weight="duotone" />
+            </Box>
+            <Box>
+              <Text fontSize="lg" fontWeight="bold" color="brand.blue">Criar cupom</Text>
+              <Text fontSize="sm" fontWeight="normal" color="gray.500">Novo cupom de desconto</Text>
+            </Box>
+          </Flex>
+        </ModalHeader>
+        <ModalCloseButton mt={2} />
         <ModalBody>
           <VStack spacing={4}>
             <FormControl isInvalid={!!errors.code}>

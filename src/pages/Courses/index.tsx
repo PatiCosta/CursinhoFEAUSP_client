@@ -1,6 +1,6 @@
-import { ArrowCircleUpRight, GraduationCap } from '@phosphor-icons/react'
+import { ArrowCircleUpRight, CalendarBlank, Clock, GraduationCap } from '@phosphor-icons/react'
 import { PageLayout } from '../../layouts/PageLayout'
-import { Badge, Flex, Grid, Skeleton, Text, VStack } from '@chakra-ui/react'
+import { Badge, Box, Flex, Grid, Skeleton, Tag, Text, VStack } from '@chakra-ui/react'
 import { Pagination } from '../../components/Pagination'
 import { useEffect } from 'react'
 import { useCourses } from '../../hooks/courses'
@@ -63,48 +63,68 @@ export function Courses() {
           </VStack>
         ) : (
           courses.map((course) => (
-            <Grid
-              templateColumns={'1fr 6rem'}
-              borderRadius="lg"
-              gap={4}
+            <Box
               key={course.id}
-              bgColor={course.informations.color}
-              cursor="pointer"
-              alignItems="center"
+              borderRadius="xl"
+              overflow="hidden"
+              boxShadow="card"
               as={Link}
               to={course.id}
-              position="relative"
-              boxShadow="card"
+              cursor="pointer"
               transition="all 0.25s ease"
-              _hover={{ transform: 'translateY(-4px)', boxShadow: 'cardHover' }}
+              _hover={{ transform: 'translateY(-5px)', boxShadow: 'cardHover', textDecoration: 'none' }}
+              display="block"
+              position="relative"
             >
-              <Text color="gray.50" py={8} px={4} fontSize={20}>
-                {course.title}
-              </Text>
-              <Flex
-                w="100%"
-                h="100%"
-                py={8}
-                px={4}
-                alignItems="center"
-                justifyContent="center"
-                borderRadius="lg"
-                bgColor={course.informations.color}
-                filter="brightness(1.1)"
-              >
-                <ArrowCircleUpRight
-                  size={28}
-                  color="#f7fafc"
-                  weight="duotone"
-                  style={{ flexShrink: '0' }}
-                />
-              </Flex>
+              <Box bgColor={course.informations.color} px={5} py={5}>
+                <Flex justify="space-between" align="start" gap={2}>
+                  <Text color="white" fontWeight="bold" fontSize={18} lineHeight={1.3}>
+                    {course.title}
+                  </Text>
+                  <ArrowCircleUpRight
+                    size={20}
+                    color="rgba(255,255,255,0.6)"
+                    weight="bold"
+                    style={{ flexShrink: 0, marginTop: 2 }}
+                  />
+                </Flex>
+              </Box>
+              <Box bg="white" px={5} py={4}>
+                <VStack align="start" spacing={1} mb={3}>
+                  <Flex align="center" gap={1.5}>
+                    <CalendarBlank size={12} color="#A0AEC0" weight="bold" />
+                    <Text fontSize="xs" color="gray.500">{course.informations.dateSchedule}</Text>
+                  </Flex>
+                  <Flex align="center" gap={1.5}>
+                    <Clock size={12} color="#A0AEC0" weight="bold" />
+                    <Text fontSize="xs" color="gray.500">{course.informations.hourSchedule}</Text>
+                  </Flex>
+                </VStack>
+                <Flex justify="space-between" align="center">
+                  <Text fontWeight="bold" color="gray.700" fontSize="sm">
+                    {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(course.subscriptions.price / 100)}
+                  </Text>
+                  <Tag
+                    colorScheme={
+                      course.subscriptions.status === 'Aberto' ? 'green'
+                      : course.subscriptions.status === 'Fechado' ? 'red'
+                      : 'orange'
+                    }
+                    size="sm"
+                    borderRadius="full"
+                    fontSize="10px"
+                    fontWeight="semibold"
+                  >
+                    {course.subscriptions.status}
+                  </Tag>
+                </Flex>
+              </Box>
               {course.status === 'inactive' && (
-                <Badge position="absolute" top={2} left={4} colorScheme="red">
+                <Badge position="absolute" top={3} right={3} colorScheme="blackAlpha" fontSize="10px">
                   Inativo
                 </Badge>
               )}
-            </Grid>
+            </Box>
           ))
         )}
       </Grid>

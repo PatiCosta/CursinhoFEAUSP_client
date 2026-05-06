@@ -1,4 +1,6 @@
 import {
+  Box,
+  Flex,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -102,15 +104,28 @@ export function CreateUserModal() {
       )}
 
       <Modal isOpen={isOpen} onClose={onClose} size="sm" isCentered={!isLg}>
-        <ModalOverlay />
-        <ModalContent as="form" onSubmit={handleSubmit(handleCreateUser)}>
-          <ModalHeader>Criar usuário</ModalHeader>
-          <ModalCloseButton />
+        <ModalOverlay backdropFilter="blur(2px)" />
+        <ModalContent
+          as="form"
+          onSubmit={handleSubmit(handleCreateUser)}
+          borderTop="4px solid"
+          borderTopColor="brand.blue"
+          borderTopRadius="xl"
+        >
+          <ModalHeader pb={2}>
+            <Flex align="center" gap={3}>
+              <Box bg="brand.blueLight" p={2} borderRadius="md">
+                <UserPlus size={20} color="#2a255a" weight="duotone" />
+              </Box>
+              <Box>
+                <Text fontSize="lg" fontWeight="bold" color="brand.blue">Criar usuário</Text>
+                <Text fontSize="sm" fontWeight="normal" color="gray.500">Novo administrador do sistema</Text>
+              </Box>
+            </Flex>
+          </ModalHeader>
+          <ModalCloseButton mt={2} />
           <ModalBody>
-            <Text fontSize={16}>
-              Você está criando um novo administrador para o sistema!
-            </Text>
-            <VStack w="100%" spacing={4} pt={8}>
+            <VStack w="100%" spacing={4}>
               <Input
                 placeholder="Nome"
                 {...register('name')}
