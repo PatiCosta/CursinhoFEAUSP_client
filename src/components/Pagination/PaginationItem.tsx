@@ -6,27 +6,20 @@ interface PaginationItemProps {
   onPageChange: (value: number) => void
 }
 
-export function PaginationItem({
-  isCurrent = false,
-  number,
-  onPageChange,
-}: PaginationItemProps) {
+export function PaginationItem({ isCurrent = false, number, onPageChange }: PaginationItemProps) {
   if (isCurrent) {
     return (
       <Button
         size="sm"
         fontSize="xs"
-        width="4"
-        bgColor="yellow.400"
-        color="gray.50"
+        w="8"
+        minW="8"
+        bgColor="brand.blue"
+        color="white"
+        borderRadius="md"
         isDisabled
-        _disabled={{
-          bgColor: 'yellow.400',
-          cursor: 'default',
-        }}
-        _hover={{
-          bgColor: 'yellow.400',
-        }}
+        _disabled={{ bgColor: 'brand.blue', cursor: 'default', opacity: 1 }}
+        _hover={{ bgColor: 'brand.blue' }}
       >
         {number}
       </Button>
@@ -37,11 +30,11 @@ export function PaginationItem({
     <Button
       size="sm"
       fontSize="xs"
-      width="4"
-      bg="gray.200"
-      _hover={{
-        bg: 'gray.300',
-      }}
+      w="8"
+      minW="8"
+      variant="ghost"
+      colorScheme="gray"
+      borderRadius="md"
       onClick={() => onPageChange(number)}
     >
       {number}

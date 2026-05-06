@@ -7,16 +7,28 @@ interface InfoBoxProps extends BoxProps {
 
 export function InfoBox({ title, info, ...rest }: InfoBoxProps) {
   return (
-    <Box {...rest}>
+    <Box
+      bg="white"
+      p={3}
+      borderRadius="md"
+      boxShadow="card"
+      borderLeft="3px solid"
+      borderLeftColor="yellow.400"
+      {...rest}
+    >
       <Text
-        color="gray.700"
-        fontSize={{ base: 16, lg: 18 }}
-        letterSpacing={0.8}
-        fontWeight="bold"
+        color="gray.400"
+        fontSize={{ base: 10, lg: 11 }}
+        fontWeight="semibold"
+        letterSpacing={1}
+        textTransform="uppercase"
+        mb={1}
       >
         {title}
       </Text>
-      <Text fontSize={{ base: 14, lg: 16 }}>{info}</Text>
+      <Text fontSize={{ base: 14, lg: 15 }} fontWeight="medium" color="gray.700">
+        {info || '—'}
+      </Text>
     </Box>
   )
 }

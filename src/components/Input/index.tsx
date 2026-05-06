@@ -1,17 +1,14 @@
 import { forwardRef, ForwardRefRenderFunction, ReactNode } from 'react'
 import {
   FormControl,
+  FormErrorMessage,
   Input as ChakraInput,
   InputGroup,
-  InputRightElement,
-  Tooltip,
   InputLeftElement,
   FormHelperText,
-  //   InputLeftAddon,
   InputProps,
   Text,
 } from '@chakra-ui/react'
-import { WarningIcon } from '@chakra-ui/icons'
 import { FieldError } from 'react-hook-form'
 
 interface InputBaseProps extends InputProps {
@@ -89,35 +86,23 @@ const InputBase: ForwardRefRenderFunction<HTMLInputElement, InputBaseProps> = (
         <ChakraInput
           name={name}
           id={name}
-          variant="flushed"
-          //   size="lg"
-          //   pl={2}
-          //   flex="1"
-          _focus={{ borderColor: 'yellow.400' }}
-          _focusVisible={{ borderColor: 'none' }}
+          variant="outline"
+          borderColor="gray.200"
+          borderRadius="lg"
+          bg="white"
+          fontSize="sm"
+          _hover={{ borderColor: 'gray.300' }}
+          _focus={{ borderColor: 'brand.blue', boxShadow: '0 0 0 1px #2a255a' }}
+          _focusVisible={{ outline: 'none' }}
           ref={ref}
-          //   bgColor="white"
-          //   borderColor="gray.200"
-          //   border="1px solid"
-          //   borderLeft={hasAddOn ? '0px' : 'initial'}
-          //   fontSize="md"
           {...rest}
         />
-
-        {!!error && (
-          <InputRightElement h="100%" color="red.500">
-            <Tooltip
-              hasArrow
-              label={error.message}
-              bg="red.500"
-              color="white"
-              placement="right"
-            >
-              <WarningIcon />
-            </Tooltip>
-          </InputRightElement>
-        )}
       </InputGroup>
+      {!!error && (
+        <FormErrorMessage fontSize="xs" mt={1}>
+          {error.message}
+        </FormErrorMessage>
+      )}
       {!!hasHelperText && <FormHelperText mt={0}>{helperText}</FormHelperText>}
     </FormControl>
   )

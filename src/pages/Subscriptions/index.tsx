@@ -156,16 +156,16 @@ export function Subscriptions() {
         </Text>
       </Flex>
 
-      <Box w="100%" mt={6} bg="white" borderRadius="lg" borderWidth="1px" borderColor="gray.200" overflow="hidden">
+      <Box w="100%" mt={6} bg="white" borderRadius="xl" boxShadow="card" overflow="hidden">
         <TableContainer>
-          <Table variant="simple" size="sm">
-            <Thead bgColor="gray.50">
-              <Tr>
-                <Th py={3} fontSize="xs" textTransform="uppercase" color="gray.500">Aluno / E-mail</Th>
-                <Th py={3} fontSize="xs" textTransform="uppercase" color="gray.500">Turma</Th>
-                <Th py={3} fontSize="xs" textTransform="uppercase" color="gray.500">Status</Th>
-                {isLg && <Th py={3} fontSize="xs" textTransform="uppercase" color="gray.500">Data / Valor</Th>}
-                <Th py={3} isNumeric fontSize="xs" textTransform="uppercase" color="gray.500">Ações</Th>
+          <Table variant="striped" colorScheme="gray" size="sm">
+            <Thead>
+              <Tr bg="brand.blue">
+                <Th py={3} fontSize="xs" textTransform="uppercase" color="gray.300" borderColor="transparent">Aluno / E-mail</Th>
+                <Th py={3} fontSize="xs" textTransform="uppercase" color="gray.300" borderColor="transparent">Turma</Th>
+                <Th py={3} fontSize="xs" textTransform="uppercase" color="gray.300" borderColor="transparent">Status</Th>
+                {isLg && <Th py={3} fontSize="xs" textTransform="uppercase" color="gray.300" borderColor="transparent">Data / Valor</Th>}
+                <Th py={3} isNumeric fontSize="xs" textTransform="uppercase" color="gray.300" borderColor="transparent">Ações</Th>
               </Tr>
             </Thead>
             <Tbody>
@@ -189,8 +189,8 @@ export function Subscriptions() {
                 subscriptionRows.map((row, i) => (
                   <Tr
                     key={`${row.studentId}-${row.schoolClassID}-index-${i}`}
-                    _hover={{ bgColor: 'gray.50' }}
-                    transition="background 0.2s"
+                    _hover={{ bg: 'blue.50', cursor: 'pointer' }}
+                    transition="background 0.15s"
                   >
                     {/* Coluna Aluno */}
                     <Td py={3}>

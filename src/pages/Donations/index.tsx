@@ -73,19 +73,19 @@ export function Donations() {
               } aplicado${quantityOfFilters > 1 ? 's' : ''}`}
         </Text>
       </Flex>
-      <Box w="100%" mt={4}>
+      <Box w="100%" mt={6} bg="white" borderRadius="xl" boxShadow="card" overflow="hidden">
         <TableContainer>
-          <Table variant="simple" size="sm">
-            <Thead bgColor="gray.100">
-              <Tr>
-                <Th fontSize={{ base: '0.7rem', sm: '0.7rem', lg: 'xs' }}>
+          <Table variant="striped" colorScheme="gray" size="sm">
+            <Thead>
+              <Tr bg="brand.blue">
+                <Th fontSize={{ base: '0.7rem', sm: '0.7rem', lg: 'xs' }} color="gray.300" borderColor="transparent">
                   Doador
                 </Th>
-                {isLg && <Th>E-mail</Th>}
-                <Th fontSize={{ base: '0.7rem', sm: '0.7rem', lg: 'xs' }}>
+                {isLg && <Th color="gray.300" borderColor="transparent">E-mail</Th>}
+                <Th fontSize={{ base: '0.7rem', sm: '0.7rem', lg: 'xs' }} color="gray.300" borderColor="transparent">
                   Valor
                 </Th>
-                {isLg && <Th>Data da doação</Th>}
+                {isLg && <Th color="gray.300" borderColor="transparent">Data da doação</Th>}
               </Tr>
             </Thead>
             <Tbody>
@@ -150,7 +150,8 @@ export function Donations() {
                       key={donation.id}
                       onClick={() => navigate(`/doacoes/${donation.id}`)}
                       cursor="pointer"
-                      _hover={{ bgColor: 'gray.100' }}
+                      _hover={{ bg: 'blue.50' }}
+                      transition="background 0.15s"
                     >
                       <Td
                         fontSize={{

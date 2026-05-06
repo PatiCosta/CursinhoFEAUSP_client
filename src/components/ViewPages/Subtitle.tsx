@@ -20,22 +20,20 @@ export function Subtitle({
   ...rest
 }: SubtitleProps) {
   return (
-    <Flex alignItems="center" {...rest}>
+    <Flex alignItems="center" justify="space-between" w="100%" {...rest}>
       <Box>
         <Flex alignItems="center" gap={2}>
           {icon}
           <Text
-            fontSize={{
-              base: size === 'sm' ? 18 : 24,
-              lg: size === 'sm' ? 24 : 28,
-            }}
-            fontWeight="medium"
+            fontSize={{ base: size === 'sm' ? 16 : 20, lg: size === 'sm' ? 18 : 22 }}
+            fontWeight="semibold"
             color="gray.700"
+            letterSpacing="-0.3px"
           >
             {children}
           </Text>
         </Flex>
-        <Box w="76px" h="2px" bgColor={lineColor} />
+        <Box w="36px" h="3px" bgColor={lineColor} borderRadius="full" mt={1} />
       </Box>
       {hasButton && button}
     </Flex>

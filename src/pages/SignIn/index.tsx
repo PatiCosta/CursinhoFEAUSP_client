@@ -64,73 +64,84 @@ export function SignIn() {
         flex="1"
         alignItems="center"
         justifyContent="center"
+        px={4}
       >
-        <Image
-          src={`${import.meta.env.VITE_APP_URL}/img/logo.png`}
-          alt="logo do cursinho FEAUSP"
-          h="80px"
-          w="fit-content"
-          mb={8}
-        />
-        <Flex alignItems="center" gap={2}>
-          <Text fontSize={32}>
-            {period === 'dia' ? 'Bom' : 'Boa'} {period}
-          </Text>
-          {period === 'dia' ? (
-            <Sun size={40} color="#023047" weight="duotone" />
-          ) : period === 'tarde' ? (
-            <SunHorizon size={40} color="#023047" weight="duotone" />
-          ) : (
-            <MoonStars size={40} color="#023047" weight="duotone" />
-          )}
-        </Flex>
-        <Text fontSize={24} fontWeight="light">
-          Bem vindo de volta!
-        </Text>
-
         <Box
-          as="form"
-          w={{ base: '300px', lg: '400px' }}
-          onSubmit={handleSubmit(handleSignIn)}
+          bg="white"
+          p={{ base: 8, lg: 10 }}
+          borderRadius="2xl"
+          boxShadow="formCard"
+          w={{ base: '100%', sm: '380px', lg: '440px' }}
         >
-          <Box mt={14}>
-            <Input
-              placeholder="Usuário"
-              {...register('username')}
-              error={errors.username}
+          <Flex direction="column" alignItems="center" mb={8}>
+            <Image
+              src={`${import.meta.env.VITE_APP_URL}/img/logo.png`}
+              alt="logo do cursinho FEAUSP"
+              h="64px"
+              w="fit-content"
+              mb={5}
             />
-          </Box>
-          <Box mt={4}>
-            <PasswordInput
-              placeholder="Senha"
-              {...register('password')}
-              error={errors.password}
-            />
-          </Box>
-          <Button
-            w="100%"
-            mt={4}
-            bgVariant="yellow"
-            text="Entrar"
-            type="submit"
-            isLoading={formState.isSubmitting}
-          />
-        </Box>
-        <Text
-          fontSize={12}
-          fontWeight="light"
-          mt={7}
-          textAlign="center"
-          w={{ base: '300px', lg: '400px' }}
-        >
-          <Highlight
-            query={['não tem uma conta', 'esqueceu sua senha']}
-            styles={{ fontWeight: 'bold' }}
+            <Flex alignItems="center" gap={2}>
+              <Text fontSize={24} fontWeight="semibold" color="brand.blue">
+                {period === 'dia' ? 'Bom' : 'Boa'} {period}
+              </Text>
+              {period === 'dia' ? (
+                <Sun size={28} color="#2a255a" weight="duotone" />
+              ) : period === 'tarde' ? (
+                <SunHorizon size={28} color="#2a255a" weight="duotone" />
+              ) : (
+                <MoonStars size={28} color="#2a255a" weight="duotone" />
+              )}
+            </Flex>
+            <Text fontSize={14} color="gray.500" mt={1}>
+              Bem vindo de volta!
+            </Text>
+          </Flex>
+
+          <Box
+            as="form"
+            onSubmit={handleSubmit(handleSignIn)}
           >
-            Ainda não tem uma conta ou esqueceu sua senha? Converse com o
-            administrador da sua equipe!
-          </Highlight>
-        </Text>
+            <Box>
+              <Input
+                placeholder="Usuário"
+                {...register('username')}
+                error={errors.username}
+              />
+            </Box>
+            <Box mt={4}>
+              <PasswordInput
+                placeholder="Senha"
+                {...register('password')}
+                error={errors.password}
+              />
+            </Box>
+            <Button
+              w="100%"
+              mt={6}
+              bgVariant="sidebar"
+              text="Entrar"
+              type="submit"
+              isLoading={formState.isSubmitting}
+              size="lg"
+            />
+          </Box>
+
+          <Text
+            fontSize={12}
+            color="gray.400"
+            mt={6}
+            textAlign="center"
+          >
+            <Highlight
+              query={['não tem uma conta', 'esqueceu sua senha']}
+              styles={{ fontWeight: 'semibold', color: 'brand.blue' }}
+            >
+              Ainda não tem uma conta ou esqueceu sua senha? Converse com o
+              administrador da sua equipe!
+            </Highlight>
+          </Text>
+        </Box>
       </Flex>
     </Flex>
   )

@@ -57,42 +57,51 @@ export function PageLayout({
         pb={2}
       >
         <Box>
-          <Flex gap={{ base: 2, sm: 2, lg: 4 }} alignItems="center">
+          <Flex gap={{ base: 2, sm: 2, lg: 3 }} alignItems="center">
             {variant === 'list' ? (
               <StarFour
-                size={isLg ? 48 : 24}
-                color="#1A202C"
+                size={isLg ? 32 : 20}
+                color="#2a255a"
                 weight="fill"
-                style={{ flexShrink: '0' }}
+                style={{ flexShrink: '0', opacity: 0.7 }}
               />
             ) : (
-              <Box onClick={returnTo} cursor="pointer">
+              <Box
+                onClick={returnTo}
+                cursor="pointer"
+                p={1}
+                borderRadius="md"
+                _hover={{ bg: 'brand.blueLight' }}
+                transition="background 0.15s"
+              >
                 <ArrowLeft
-                  size={isLg ? 48 : 24}
-                  color="#1A202C"
-                  weight="light"
+                  size={isLg ? 28 : 20}
+                  color="#2a255a"
+                  weight="bold"
                   style={{ flexShrink: '0' }}
                 />
               </Box>
             )}
             <Text
-              fontSize={{ base: 24, sm: 24, lg: 40 }}
-              lineHeight="1.2"
-              fontWeight="semibold"
+              fontSize={{ base: 22, sm: 22, lg: 32 }}
+              lineHeight="1.1"
+              fontWeight="bold"
+              color="brand.blue"
+              letterSpacing="-0.5px"
             >
               {title}
             </Text>
           </Flex>
           <Flex
-            gap={{ base: 2, sm: 2, lg: 4 }}
+            gap={{ base: 2, sm: 2, lg: 3 }}
             alignItems="center"
-            mt={{ base: 3, sm: 3, lg: 0 }}
+            mt={1}
           >
-            <Box
-              w={{ base: '32px', sm: '32px', lg: '48px' }}
-              h={{ base: '32px', sm: '32px', lg: '48px' }}
-            ></Box>
-            <Text fontSize={{ base: 14, sm: 14, lg: 18 }}>{subtitle}</Text>
+            <Box w={{ base: '20px', sm: '20px', lg: '28px' }} />
+            <Box>
+              <Text fontSize={{ base: 13, sm: 13, lg: 15 }} color="gray.500">{subtitle}</Text>
+              <Box w="32px" h="3px" bgColor="yellow.400" borderRadius="full" mt={1} />
+            </Box>
           </Flex>
         </Box>
         {hasButton && button}

@@ -101,14 +101,14 @@ export function CouponsTable({ coupons, onRefresh }: CouponsTableProps) {
 
   return (
     <>
-      <Table variant="simple" bg="white" borderRadius="md" boxShadow="base" mt={4}>
+      <Table variant="striped" colorScheme="gray" mt={4}>
         <Thead>
-          <Tr>
-            <Th>Código</Th>
-            <Th isNumeric>Valor (R$)</Th>
-            <Th>Data de Criação</Th>
-            <Th>Ativo?</Th>
-            <Th>Ações</Th>
+          <Tr bg="brand.blue">
+            <Th color="gray.300" borderColor="transparent">Código</Th>
+            <Th isNumeric color="gray.300" borderColor="transparent">Valor (R$)</Th>
+            <Th color="gray.300" borderColor="transparent">Criação</Th>
+            <Th color="gray.300" borderColor="transparent">Ativo?</Th>
+            <Th color="gray.300" borderColor="transparent">Ações</Th>
           </Tr>
         </Thead>
         <Tbody>

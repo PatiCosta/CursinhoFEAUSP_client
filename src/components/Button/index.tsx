@@ -27,11 +27,15 @@ export function Button({ bgVariant, text, ...rest }: ButtonProps) {
           ? 'gray.200'
           : 'inherit'
       }
-      color={bgVariant === 'ghost' ? 'gray.800' : 'gray.50'}
-      transition=".4s"
+      color={bgVariant === 'ghost' ? 'gray.700' : 'gray.50'}
+      transition="all 0.2s ease"
       _hover={{
-        filter: 'contrast(110%)',
+        transform: 'translateY(-1px)',
+        boxShadow: 'md',
+        filter: 'brightness(1.05)',
+        _disabled: { transform: 'none', boxShadow: 'none' },
       }}
+      _active={{ transform: 'translateY(0)', boxShadow: 'none' }}
       size={{ base: 'sm', sm: 'sm', lg: 'md' }}
       {...rest}
     >

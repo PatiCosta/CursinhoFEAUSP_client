@@ -68,6 +68,9 @@ export function Courses() {
               as={Link}
               to={course.id}
               position="relative"
+              boxShadow="card"
+              transition="all 0.25s ease"
+              _hover={{ transform: 'translateY(-4px)', boxShadow: 'cardHover' }}
             >
               <Text color="gray.50" py={8} px={4} fontSize={20}>
                 {course.title}

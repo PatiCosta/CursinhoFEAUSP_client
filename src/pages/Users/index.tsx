@@ -153,18 +153,18 @@ export function Users() {
           />
         )}
       </Flex>
-      <Box w="100%" mt={4}>
+      <Box w="100%" mt={6} bg="white" borderRadius="xl" boxShadow="card" overflow="hidden">
         <TableContainer>
-          <Table variant="simple" size="sm">
-            <Thead bgColor="gray.100">
-              <Tr>
-                <Th fontSize={{ base: '0.7rem', sm: '0.7rem', lg: 'xs' }}>
+          <Table variant="striped" colorScheme="gray" size="sm">
+            <Thead>
+              <Tr bg="brand.blue">
+                <Th fontSize={{ base: '0.7rem', sm: '0.7rem', lg: 'xs' }} color="gray.300" borderColor="transparent">
                   nome
                 </Th>
-                <Th fontSize={{ base: '0.7rem', sm: '0.7rem', lg: 'xs' }}>
+                <Th fontSize={{ base: '0.7rem', sm: '0.7rem', lg: 'xs' }} color="gray.300" borderColor="transparent">
                   username
                 </Th>
-                <Th isNumeric>opções</Th>
+                <Th isNumeric color="gray.300" borderColor="transparent">opções</Th>
               </Tr>
             </Thead>
             <Tbody>

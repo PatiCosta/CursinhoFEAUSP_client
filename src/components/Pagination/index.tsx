@@ -1,13 +1,12 @@
-import { Box, Button, Stack, StackProps, Text } from '@chakra-ui/react'
+import { Box, Flex, IconButton, Stack, StackProps, Text } from '@chakra-ui/react'
+import { CaretLeft, CaretRight } from '@phosphor-icons/react'
 import { PaginationItem } from './PaginationItem'
 
 const siblingsCount = 1
 
 function generatePagesArray(from: number, to: number) {
   return [...new Array(to - from)]
-    .map((_, index) => {
-      return from + index + 1
-    })
+    .map((_, index) => from + index + 1)
     .filter((page) => page > 0)
 }
 
@@ -28,7 +27,6 @@ export function Pagination({
   ...rest
 }: PaginationProps) {
   const lastPage = Math.ceil(totalCountOfRegisters / registersPerPage)
-
   const offset = (currentPage - 1) * registersPerPage
 
   const previousPages =
@@ -38,88 +36,65 @@ export function Pagination({
 
   const nextPages =
     currentPage < lastPage
-      ? generatePagesArray(
-          currentPage,
-          Math.min(currentPage + siblingsCount, lastPage),
-        )
+      ? generatePagesArray(currentPage, Math.min(currentPage + siblingsCount, lastPage))
       : []
 
   return (
-    <Stack
-      direction="row"
-      justify="space-between"
-      align="center"
-      spacing="6"
-      w="100%"
-      {...rest}
-    >
+    <Stack direction="row" justify="space-between" align="center" spacing="4" w="100%" {...rest}>
       {loading ? (
-        <strong>carregando...</strong>
+        <Text fontSize="sm" color="gray.400">Carregando...</Text>
       ) : (
-        <Box>
-          <strong>{offset + 1}</strong> -{' '}
-          <strong>
+        <Text fontSize="sm" color="gray.500">
+          <Box as="span" fontWeight="semibold" color="gray.700">{offset + 1}</Box>
+          {' – '}
+          <Box as="span" fontWeight="semibold" color="gray.700">
             {offset + registersPerPage < totalCountOfRegisters
               ? offset + registersPerPage
               : totalCountOfRegisters}
-          </strong>{' '}
-          de <strong>{totalCountOfRegisters}</strong>
-        </Box>
+          </Box>
+          {' de '}
+          <Box as="span" fontWeight="semibold" color="gray.700">{totalCountOfRegisters}</Box>
+        </Text>
       )}
-      {loading ? (
-        <Button
+
+      <Flex align="center" gap={1}>
+        <IconButton
+          aria-label="Página anterior"
+          icon={<CaretLeft size={14} weight="bold" />}
           size="sm"
-          fontSize="xs"
-          width="4"
-          bgColor="yellow.400"
-          color="gray.50"
-          isLoading
+          variant="ghost"
+          colorScheme="gray"
+          isDisabled={currentPage === 1 || loading}
+          onClick={() => onPageChange(currentPage - 1)}
+          borderRadius="md"
         />
-      ) : (
-        <Stack direction="row" spacing="2">
+
+        <Stack direction="row" spacing="1">
           {currentPage > 1 + siblingsCount && (
             <>
               <PaginationItem onPageChange={onPageChange} number={1} />
               {currentPage > 2 + siblingsCount && (
-                <Text color="gray.700" width="8" textAlign="center">
+                <Text color="gray.400" width="8" textAlign="center" lineHeight="32px" fontSize="sm">
                   ...
                 </Text>
               )}
             </>
           )}
 
-          {previousPages.length > 0 &&
-            previousPages.map((page) => {
-              return (
-                <PaginationItem
-                  onPageChange={onPageChange}
-                  number={page}
-                  key={page}
-                />
-              )
-            })}
+          {previousPages.map((page) => (
+            <PaginationItem onPageChange={onPageChange} number={page} key={page} />
+          ))}
 
-          <PaginationItem
-            onPageChange={onPageChange}
-            isCurrent
-            number={currentPage}
-          />
+          <PaginationItem onPageChange={onPageChange} isCurrent number={currentPage} />
 
-          {nextPages.length > 0 &&
-            nextPages.map((page) => {
-              return (
-                <PaginationItem
-                  onPageChange={onPageChange}
-                  number={page}
-                  key={page}
-                />
-              )
-            })}
+          {nextPages.map((page) => (
+            <PaginationItem onPageChange={onPageChange} number={page} key={page} />
+          ))}
 
           {currentPage + siblingsCount < lastPage && (
             <>
               {currentPage + 1 + siblingsCount < lastPage && (
-                <Text color="gray.700" width="8" textAlign="center">
+                <Text color="gray.400" width="8" textAlign="center" lineHeight="32px" fontSize="sm">
                   ...
                 </Text>
               )}
@@ -127,7 +102,18 @@ export function Pagination({
             </>
           )}
         </Stack>
-      )}
+
+        <IconButton
+          aria-label="Próxima página"
+          icon={<CaretRight size={14} weight="bold" />}
+          size="sm"
+          variant="ghost"
+          colorScheme="gray"
+          isDisabled={currentPage === lastPage || loading}
+          onClick={() => onPageChange(currentPage + 1)}
+          borderRadius="md"
+        />
+      </Flex>
     </Stack>
   )
 }
