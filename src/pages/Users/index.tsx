@@ -8,11 +8,14 @@ import {
   TableContainer,
   Tbody,
   Td,
+  Text,
   Th,
   Thead,
   Tr,
   useBreakpointValue,
+  VStack,
 } from '@chakra-ui/react'
+import { UserCircleGear } from '@phosphor-icons/react'
 
 import { PageLayout } from '../../layouts/PageLayout'
 import { Pagination } from '../../components/Pagination'
@@ -218,8 +221,12 @@ export function Users() {
                 </>
               ) : users.length === 0 ? (
                 <Tr>
-                  <Td colSpan={3} textAlign="center" py={10} color="gray.500">
-                    Nenhum administrador encontrado.
+                  <Td colSpan={3} py={16}>
+                    <VStack spacing={3} color="gray.400">
+                      <UserCircleGear size={48} weight="duotone" />
+                      <Text fontWeight="medium" fontSize="md">Nenhum administrador encontrado</Text>
+                      <Text fontSize="sm">Crie um novo usuário clicando em "Adicionar usuário".</Text>
+                    </VStack>
                   </Td>
                 </Tr>
               ) : (

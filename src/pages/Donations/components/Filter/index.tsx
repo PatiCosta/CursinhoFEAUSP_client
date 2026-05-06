@@ -180,7 +180,7 @@ export function Filter() {
       <Modal isOpen={isOpen} onClose={onClose} size="lg">
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Exportar em excel</ModalHeader>
+          <ModalHeader>Filtros</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <Text fontSize={16}>

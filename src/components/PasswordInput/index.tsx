@@ -48,9 +48,14 @@ const InputBase: ForwardRefRenderFunction<HTMLInputElement, InputBaseProps> = (
         <ChakraInput
           name={name}
           id={name}
-          variant="flushed"
-          _focus={{ borderColor: 'yellow.400' }}
-          _focusVisible={{ borderColor: 'none' }}
+          variant="outline"
+          borderColor="gray.200"
+          borderRadius="lg"
+          bg="white"
+          fontSize="sm"
+          _hover={{ borderColor: 'gray.300' }}
+          _focus={{ borderColor: 'brand.blue', boxShadow: '0 0 0 1px #2a255a' }}
+          _focusVisible={{ outline: 'none' }}
           ref={ref}
           type={show ? 'text' : 'password'}
           {...rest}

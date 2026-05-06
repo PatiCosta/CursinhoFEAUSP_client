@@ -14,9 +14,10 @@ import {
   Tr,
   useBreakpointValue,
   IconButton,
-  Tooltip
+  Tooltip,
+  VStack,
 } from '@chakra-ui/react'
-import { MagnifyingGlass } from '@phosphor-icons/react'
+import { MagnifyingGlass, UsersThree } from '@phosphor-icons/react'
 import { Pagination } from '../../components/Pagination'
 import { useStudents } from '../../hooks/subscriptions'
 import { useCourses } from '../../hooks/courses'
@@ -181,8 +182,12 @@ export function Subscriptions() {
                 ))
               ) : subscriptionRows.length === 0 ? (
                 <Tr>
-                  <Td colSpan={isLg ? 5 : 4} textAlign="center" py={10} color="gray.500">
-                    Nenhuma inscrição encontrada.
+                  <Td colSpan={isLg ? 5 : 4} py={16}>
+                    <VStack spacing={3} color="gray.400">
+                      <UsersThree size={48} weight="duotone" />
+                      <Text fontWeight="medium" fontSize="md">Nenhuma inscrição encontrada</Text>
+                      <Text fontSize="sm">Tente ajustar os filtros ou aguarde novos registros.</Text>
+                    </VStack>
                   </Td>
                 </Tr>
               ) : (

@@ -8,7 +8,7 @@ import {
 import { PageLayout } from '../../../layouts/PageLayout'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useCourses } from '../../../hooks/courses'
-import { Box, Grid, Link, Text, useBreakpointValue } from '@chakra-ui/react'
+import { Box, Flex, Grid, Link, Tag, Text, useBreakpointValue } from '@chakra-ui/react'
 import { useEffect } from 'react'
 import { UpdateClassStatus } from './components/UpdateClassStatus'
 import { DeleteSelectiveStage } from './components/DeleteSelectiveStage'
@@ -26,322 +26,222 @@ export function ViewCourse() {
   const isLg = useBreakpointValue({ base: false, sm: false, lg: true })
 
   const course = courses.find((c) => c.id === id)
-
   const handleReturn = () => navigate('/cursos')
 
   useEffect(() => {
-    if (course === undefined) {
-      handleReturn()
-    }
+    if (course === undefined) handleReturn()
   }, [course])
 
-  if (course !== undefined) {
-    return (
-      <PageLayout
-        variant="view"
-        title={course.title}
-        subtitle="Aqui você pode visualizar as informações e gerenciar esta turma"
-        hasButton
-        button={
-          <UpdateClassStatus
-            courseStatus={course.status}
-            courseId={course.id}
-          />
-        }
-        returnTo={handleReturn}
-      >
-        <Box
-          pl={{ base: 4, sm: 4, lg: 16 }}
-          pr={{ base: 4, sm: 4, lg: 6 }}
-          mt={8}
-        >
-          <Subtitle
-            size="lg"
-            icon={
-              <Notebook
-                size={isLg ? 32 : 24}
-                color={course.informations.color}
-                weight="duotone"
-              />
-            }
-            lineColor={course.informations.color}
-            hasButton
-            button={<UpdateCourseInfo id={course.id} course={course} />}
-            justifyContent="space-between"
-            w="100%"
-          >
-            Informações gerais
-          </Subtitle>
-          <Grid
-            mt={4}
-            templateColumns={{ base: '1fr', lg: '1.4fr .9fr .9fr 1.3fr .5fr' }}
-            gap={{ base: 4, lg: 8 }}
-            textAlign="start"
-          >
+  if (course === undefined) return null
+
+  const accentColor = course.informations.color
+
+  return (
+    <PageLayout
+      variant="view"
+      title={course.title}
+      subtitle="Gerenciar turma"
+      hasButton
+      button={<UpdateClassStatus courseStatus={course.status} courseId={course.id} />}
+      returnTo={handleReturn}
+    >
+      <Box px={{ base: 3, sm: 3, lg: 6 }} mt={4} pb={8}>
+
+        {/* Informações gerais */}
+        <Box bg="white" borderRadius="xl" p={{ base: 4, lg: 6 }} boxShadow="card" mb={4}>
+          <Flex justify="space-between" align="center" mb={4} wrap="wrap" gap={2}>
+            <Subtitle
+              size="lg"
+              icon={<Notebook size={isLg ? 24 : 20} color={accentColor} weight="duotone" />}
+              lineColor={accentColor}
+            >
+              Informações gerais
+            </Subtitle>
+            <Flex gap={2} align="center">
+              <Tag
+                colorScheme={course.status === 'active' ? 'green' : 'red'}
+                borderRadius="full"
+                fontWeight="semibold"
+                size="md"
+              >
+                {course.status === 'active' ? 'Ativo' : 'Inativo'}
+              </Tag>
+              <UpdateCourseInfo id={course.id} course={course} />
+            </Flex>
+          </Flex>
+          <Grid templateColumns={{ base: '1fr', lg: '1.5fr 1fr 1fr 1fr' }} gap={4}>
             <InfoBox title="Título" info={course.title} />
             <InfoBox title="Conteúdo" info={course.informations.classContent} />
-            <InfoBox
-              title="Dias de aula"
-              info={course.informations.dateSchedule}
-            />
-            <InfoBox
-              title="Horário das aulas"
-              info={course.informations.hourSchedule}
-            />
+            <InfoBox title="Dias de aula" info={course.informations.dateSchedule} />
+            <InfoBox title="Horário" info={course.informations.hourSchedule} />
+          </Grid>
+          <Grid templateColumns={{ base: '1fr', lg: '1fr 1fr 1fr' }} gap={4} mt={4}>
+            <InfoBox title="Quem pode participar?" info={course.informations.whoCanParticipate} />
+            <InfoBox title="Observações" info={course.informations.observations || 'Não há observações'} />
             <Box>
-              <Text
-                color="gray.700"
-                fontSize={{ base: 16, lg: 18 }}
-                letterSpacing={0.8}
-                fontWeight="bold"
-              >
-                Cor
+              <Text color="gray.400" fontSize={11} fontWeight="semibold" letterSpacing={1} textTransform="uppercase" mb={2}>
+                Cor da turma
               </Text>
-              <Box
-                w="80px"
-                h="18px"
-                borderRadius="sm"
-                bgColor={course.informations.color}
-              />
+              <Flex align="center" gap={2}>
+                <Box w="28px" h="28px" borderRadius="md" bgColor={accentColor} boxShadow="card" />
+                <Text fontSize="sm" color="gray.600" fontFamily="mono">{accentColor}</Text>
+              </Flex>
             </Box>
           </Grid>
-          <InfoBox
-            title="Status"
-            info={`${
-              course.status === 'active' ? 'Ativo' : 'Inativo'
-            }. Esta turma ${
-              course.status === 'inactive' ? 'não' : ''
-            } está aparecendo no site para novas inscrições.`}
-            mt={4}
-          />
-          <InfoBox
-            title="Quem pode participar?"
-            info={course.informations.whoCanParticipate}
-            mt={4}
-          />
-          <InfoBox
-            title="Descrição"
-            info={course.informations.description}
-            mt={4}
-          />
-          <InfoBox
-            title="Observações"
-            info={
-              course.informations.observations
-                ? course.informations.observations
-                : 'Não há observações'
-            }
-            mt={4}
-          />
-          <Box ml={{ base: 6, lg: 9 }} mt={{ base: 6, lg: 8 }}>
-            <Subtitle
-              size="sm"
-              icon={
-                <CaretDoubleRight
-                  size={isLg ? 32 : 24}
-                  color={course.informations.color}
-                  weight="duotone"
-                />
-              }
-              lineColor={course.informations.color}
-              justifyContent="space-between"
-            >
-              Inscrições
-            </Subtitle>
-            <Grid
-              mt={4}
-              templateColumns={{ base: '1fr', lg: '1.2fr .9fr .9fr' }}
-              gap={{ base: 4, lg: 8 }}
-              textAlign="start"
-            >
-              <InfoBox
-                title="Período das incrições"
-                info={course.subscriptions.subscriptionSchedule}
-              />
-              <InfoBox title="Status" info={course.subscriptions.status} />
-              <InfoBox
-                title="Valor"
-                info={new Intl.NumberFormat('pt-BR', {
-                  style: 'currency',
-                  currency: 'BRL',
-                }).format(course.subscriptions.price / 100)}
-              />
-            </Grid>
+          <Box mt={4}>
+            <InfoBox title="Descrição" info={course.informations.description} />
           </Box>
-          <Box ml={{ base: 6, lg: 9 }} mt={{ base: 6, lg: 8 }}>
-            <Subtitle
-              size="sm"
-              icon={
-                <CaretDoubleRight
-                  size={isLg ? 32 : 24}
-                  color={course.informations.color}
-                  weight="duotone"
-                />
-              }
-              lineColor={course.informations.color}
-              justifyContent="space-between"
-            >
-              Matrícula
-            </Subtitle>
-            <Grid
-              mt={4}
-              templateColumns={{ base: '1fr', lg: '1.2fr .9fr .9fr' }}
-              gap={{ base: 4, lg: 8 }}
-              textAlign="start"
-            >
-              <InfoBox
-                title="Informações sobre a matrícula"
-                info={course.registrations.description}
-              />
-              <InfoBox
-                title="Valor"
-                info={
-                  course.registrations.value === 0
-                    ? 'Não informado'
-                    : new Intl.NumberFormat('pt-BR', {
-                        style: 'currency',
-                        currency: 'BRL',
-                      }).format(course.registrations.value / 100)
-                }
-              />
-            </Grid>
-          </Box>
+        </Box>
+
+        {/* Inscrições */}
+        <Box bg="white" borderRadius="xl" p={{ base: 4, lg: 6 }} boxShadow="card" mb={4}>
           <Subtitle
-            size="lg"
-            icon={
-              <CalendarCheck
-                size={isLg ? 32 : 24}
-                color={course.informations.color}
-                weight="duotone"
-                style={{ flexShrink: '0' }}
-              />
-            }
-            lineColor={course.informations.color}
-            hasButton
-            button={
-              <CreateSelectiveStage
-                courseId={course.id}
-                courseTitle={course.title}
-              />
-            }
-            mt={8}
-            justifyContent="space-between"
-            w="100%"
+            size="sm"
+            icon={<CaretDoubleRight size={isLg ? 20 : 18} color={accentColor} weight="duotone" />}
+            lineColor={accentColor}
           >
-            Etapas do Processo Seletivo
+            Inscrições
           </Subtitle>
+          <Grid mt={4} templateColumns={{ base: '1fr', lg: '1.2fr 0.8fr 0.8fr' }} gap={4}>
+            <InfoBox title="Período das inscrições" info={course.subscriptions.subscriptionSchedule} />
+            <InfoBox title="Status das inscrições" info={course.subscriptions.status} />
+            <InfoBox
+              title="Valor"
+              info={new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(course.subscriptions.price / 100)}
+            />
+          </Grid>
+        </Box>
+
+        {/* Matrícula */}
+        <Box bg="white" borderRadius="xl" p={{ base: 4, lg: 6 }} boxShadow="card" mb={4}>
+          <Subtitle
+            size="sm"
+            icon={<CaretDoubleRight size={isLg ? 20 : 18} color={accentColor} weight="duotone" />}
+            lineColor={accentColor}
+          >
+            Matrícula
+          </Subtitle>
+          <Grid mt={4} templateColumns={{ base: '1fr', lg: '2fr 1fr' }} gap={4}>
+            <InfoBox title="Informações sobre a matrícula" info={course.registrations.description} />
+            <InfoBox
+              title="Valor"
+              info={course.registrations.value === 0
+                ? 'Não informado'
+                : new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(course.registrations.value / 100)}
+            />
+          </Grid>
+        </Box>
+
+        {/* Etapas do processo seletivo */}
+        <Box bg="white" borderRadius="xl" p={{ base: 4, lg: 6 }} boxShadow="card" mb={4}>
+          <Flex justify="space-between" align="center" mb={4} wrap="wrap" gap={2}>
+            <Subtitle
+              size="lg"
+              icon={<CalendarCheck size={isLg ? 24 : 20} color={accentColor} weight="duotone" />}
+              lineColor={accentColor}
+            >
+              Etapas do Processo Seletivo
+            </Subtitle>
+            <CreateSelectiveStage courseId={course.id} courseTitle={course.title} />
+          </Flex>
+
+          {course.selectiveStages && course.selectiveStages.length === 0 && (
+            <Text color="gray.400" fontSize="sm" mt={2}>Nenhuma etapa cadastrada.</Text>
+          )}
+
           {course.selectiveStages?.reverse().map((stage, index) => (
             <Box
-              ml={{ base: 6, lg: 9 }}
-              mt={{ base: 6, lg: 8 }}
               key={stage.stagesID}
+              mt={4}
+              bg="gray.50"
+              borderRadius="lg"
+              p={4}
+              borderLeft="3px solid"
+              borderLeftColor={accentColor}
             >
-              <Subtitle
-                size="sm"
-                icon={
-                  <CaretDoubleRight
-                    size={isLg ? 32 : 24}
-                    color={course.informations.color}
-                    weight="duotone"
-                  />
-                }
-                lineColor={course.informations.color}
-                hasButton
-                button={
-                  <DeleteSelectiveStage
-                    stageId={stage.stagesID}
-                    courseId={course.id}
-                  />
-                }
-                justifyContent="start"
-                gap={6}
-              >
-                {`Etapa ${index + 1}`}
-              </Subtitle>
-              <Grid
-                templateColumns={{ base: '1fr', lg: '1fr 1fr' }}
-                mt={4}
-                gap={{ base: 4, lg: 8 }}
-              >
+              <Flex justify="space-between" align="center" mb={3}>
+                <Subtitle
+                  size="sm"
+                  icon={<CaretDoubleRight size={18} color={accentColor} weight="duotone" />}
+                  lineColor={accentColor}
+                >
+                  {`Etapa ${index + 1}`}
+                </Subtitle>
+                <DeleteSelectiveStage stageId={stage.stagesID} courseId={course.id} />
+              </Flex>
+              <Grid templateColumns={{ base: '1fr', lg: '1fr 1fr' }} gap={4}>
                 <InfoBox info={stage.when} title="Quando?" />
                 <InfoBox
-                  info={
-                    stage.resultsDate
-                      ? new Intl.DateTimeFormat('pt-BR').format(
-                          new Date(stage.resultsDate),
-                        )
-                      : 'Não informado'
-                  }
+                  info={stage.resultsDate
+                    ? new Intl.DateTimeFormat('pt-BR').format(new Date(stage.resultsDate))
+                    : 'Não informado'}
                   title="Data dos resultados"
                 />
               </Grid>
-              <InfoBox info={stage.description} title="Descrição" mt={4} />
+              <Box mt={4}>
+                <InfoBox info={stage.description} title="Descrição" />
+              </Box>
             </Box>
           ))}
-          <Subtitle
-            size="lg"
-            icon={
-              <Book
-                size={isLg ? 32 : 24}
-                color={course.informations.color}
-                weight="duotone"
-                style={{ flexShrink: '0' }}
-              />
-            }
-            lineColor={course.informations.color}
-            hasButton
-            button={
-              <CreateDocument courseId={course.id} courseTitle={course.title} />
-            }
-            mt={8}
-            justifyContent="space-between"
-            w="100%"
-          >
-            Documentos
-          </Subtitle>
-          <Grid
-            templateColumns={{ base: '1fr 1fr', lg: 'repeat(5, 1fr)' }}
-            ml={{ base: 0, lg: 9 }}
-            mt={{ base: 6, lg: 8 }}
-            gap={{ base: 4, lg: 7 }}
-          >
+        </Box>
+
+        {/* Documentos */}
+        <Box bg="white" borderRadius="xl" p={{ base: 4, lg: 6 }} boxShadow="card" mb={4}>
+          <Flex justify="space-between" align="center" mb={4} wrap="wrap" gap={2}>
+            <Subtitle
+              size="lg"
+              icon={<Book size={isLg ? 24 : 20} color={accentColor} weight="duotone" />}
+              lineColor={accentColor}
+            >
+              Documentos
+            </Subtitle>
+            <CreateDocument courseId={course.id} courseTitle={course.title} />
+          </Flex>
+
+          {course.documents && course.documents.length === 0 && (
+            <Text color="gray.400" fontSize="sm">Nenhum documento cadastrado.</Text>
+          )}
+
+          <Grid templateColumns={{ base: '1fr 1fr', lg: 'repeat(4, 1fr)' }} gap={4} mt={2}>
             {course.documents?.map((doc) => (
               <Box
-                boxShadow={{ base: 'md', lg: 'xl' }}
-                borderRadius="lg"
-                px={8}
-                py={4}
                 key={doc.docsID}
-                border=".5px solid"
+                bg="gray.50"
+                borderRadius="lg"
+                px={4}
+                py={5}
+                border="1px solid"
                 borderColor="gray.200"
                 position="relative"
+                transition="all 0.2s"
+                _hover={{ boxShadow: 'card', borderColor: accentColor }}
+                textAlign="center"
               >
                 <BookOpen
-                  size={48}
-                  color={course.informations.color}
+                  size={36}
+                  color={accentColor}
                   weight="duotone"
-                  style={{ margin: 'auto' }}
+                  style={{ margin: '0 auto 8px' }}
                 />
-                <Box textAlign="center" mt={4}>
-                  <Link
-                    href={doc.downloadLink}
-                    isExternal
-                    textDecoration="underline"
-                    fontWeight="semibold"
-                  >
-                    {doc.title}
-                  </Link>
+                <Link
+                  href={doc.downloadLink}
+                  isExternal
+                  fontSize="xs"
+                  fontWeight="semibold"
+                  color="gray.700"
+                  _hover={{ color: 'brand.blue' }}
+                  display="block"
+                >
+                  {doc.title}
+                </Link>
+                <Box mt={2}>
+                  <DeleteDocument courseId={course.id} documentId={doc.docsID} documentTitle={doc.title} />
                 </Box>
-                <DeleteDocument
-                  courseId={course.id}
-                  documentId={doc.docsID}
-                  documentTitle={doc.title}
-                />
               </Box>
             ))}
           </Grid>
         </Box>
-      </PageLayout>
-    )
-  } else return null
+      </Box>
+    </PageLayout>
+  )
 }

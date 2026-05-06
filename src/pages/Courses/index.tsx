@@ -1,6 +1,6 @@
-import { ArrowCircleUpRight } from '@phosphor-icons/react'
+import { ArrowCircleUpRight, GraduationCap } from '@phosphor-icons/react'
 import { PageLayout } from '../../layouts/PageLayout'
-import { Badge, Flex, Grid, Skeleton, Text } from '@chakra-ui/react'
+import { Badge, Flex, Grid, Skeleton, Text, VStack } from '@chakra-ui/react'
 import { Pagination } from '../../components/Pagination'
 import { useEffect } from 'react'
 import { useCourses } from '../../hooks/courses'
@@ -55,6 +55,12 @@ export function Courses() {
             <Skeleton w="100%" h="200px" />
             <Skeleton w="100%" h="200px" />
           </>
+        ) : courses.length === 0 ? (
+          <VStack spacing={3} color="gray.400" py={16} gridColumn="span 3">
+            <GraduationCap size={56} weight="duotone" />
+            <Text fontWeight="medium" fontSize="lg">Nenhuma turma cadastrada</Text>
+            <Text fontSize="sm">Clique em "Adicionar turma" para criar a primeira.</Text>
+          </VStack>
         ) : (
           courses.map((course) => (
             <Grid

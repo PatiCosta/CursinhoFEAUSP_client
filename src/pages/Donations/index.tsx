@@ -12,7 +12,9 @@ import {
   Thead,
   Tr,
   useBreakpointValue,
+  VStack,
 } from '@chakra-ui/react'
+import { HandCoins } from '@phosphor-icons/react'
 import { Pagination } from '../../components/Pagination'
 import { useDonations } from '../../hooks/donations'
 import { Donation } from '../../interfaces/Donation.interface'
@@ -139,8 +141,12 @@ export function Donations() {
                 </>
               ) : donations.length === 0 ? (
                 <Tr>
-                  <Td colSpan={isLg ? 4 : 2} textAlign="center" py={10} color="gray.500">
-                    Nenhuma doação encontrada.
+                  <Td colSpan={isLg ? 4 : 2} py={16}>
+                    <VStack spacing={3} color="gray.400">
+                      <HandCoins size={48} weight="duotone" />
+                      <Text fontWeight="medium" fontSize="md">Nenhuma doação encontrada</Text>
+                      <Text fontSize="sm">Tente ajustar os filtros ou aguarde novas doações.</Text>
+                    </VStack>
                   </Td>
                 </Tr>
               ) : (

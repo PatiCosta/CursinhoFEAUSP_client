@@ -2,7 +2,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { useDonations } from '../../../hooks/donations'
 import { PageLayout } from '../../../layouts/PageLayout'
 import { useEffect } from 'react'
-import { Box, Grid, Link, useBreakpointValue } from '@chakra-ui/react'
+import { Box, Flex, Grid, Link, useBreakpointValue } from '@chakra-ui/react'
 import { Subtitle } from '../../../components/ViewPages/Subtitle'
 import {
   ChatsCircle,
@@ -23,211 +23,155 @@ export function ViewDonation() {
 
   const donation = donations.find((d) => d.id === id)
   const wppLink = donation ? `https://wa.me/55${donation.phoneNumber}` : '/'
-
   const handleReturn = () => navigate('/doacoes')
 
   useEffect(() => {
-    if (donation === undefined) {
-      handleReturn()
-    }
+    if (donation === undefined) handleReturn()
   }, [donation])
 
-  if (donation !== undefined) {
-    return (
-      <PageLayout
-        variant="view"
-        title="Visualizar doação"
-        subtitle="Aqui você pode visualizar as informações desta doação"
-        hasButton={false}
-        returnTo={handleReturn}
-      >
-        <Box
-          pl={{ base: 4, sm: 4, lg: 16 }}
-          pr={{ base: 4, sm: 4, lg: 6 }}
-          mt={8}
-        >
+  if (donation === undefined) return null
+
+  return (
+    <PageLayout
+      variant="view"
+      title={donation.name}
+      subtitle="Visualizar doação"
+      hasButton={false}
+      returnTo={handleReturn}
+    >
+      <Box px={{ base: 3, sm: 3, lg: 6 }} mt={4} pb={8}>
+
+        {/* Informações gerais */}
+        <Box bg="white" borderRadius="xl" p={{ base: 4, lg: 6 }} boxShadow="card" mb={4}>
           <Subtitle
             size="lg"
-            icon={
-              <Notebook
-                size={isLg ? 32 : 24}
-                color="#E9C46A"
-                weight="duotone"
-              />
-            }
+            icon={<Notebook size={isLg ? 24 : 20} color="#E9C46A" weight="duotone" />}
             lineColor="yellow.400"
-            justifyContent="space-between"
-            w="100%"
           >
             Informações gerais
           </Subtitle>
-          <Grid
-            mt={4}
-            templateColumns={{ base: '1fr', lg: '1fr 1fr 1fr' }}
-            gap={{ base: 4, lg: 8 }}
-            textAlign="start"
-          >
-            <InfoBox title="Nome do doador" info={donation.name} />
-            <InfoBox
-              title="Gênero"
-              info={donation.gender ? donation.gender : 'Não informado'}
-            />
+          <Grid mt={4} templateColumns={{ base: '1fr', lg: '1fr 1fr 1fr' }} gap={4}>
+            <InfoBox title="Nome" info={donation.name} />
+            <InfoBox title="Gênero" info={donation.gender || 'Não informado'} />
             <InfoBox title="Data de nascimento" info={donation.birth} />
             <InfoBox title="CPF" info={formatCPF(donation.cpf)} />
             <InfoBox
-              title="RG e UF de emissão"
-              info={
-                donation.rg
-                  ? `${donation.rg}/${donation.ufrg}`
-                  : 'Não informado'
-              }
+              title="RG / UF de emissão"
+              info={donation.rg ? `${donation.rg} / ${donation.ufrg}` : 'Não informado'}
             />
           </Grid>
+        </Box>
+
+        {/* Contato */}
+        <Box bg="white" borderRadius="xl" p={{ base: 4, lg: 6 }} boxShadow="card" mb={4}>
           <Subtitle
             size="lg"
-            icon={
-              <ChatsCircle
-                size={isLg ? 32 : 24}
-                color="#E9C46A"
-                weight="duotone"
-              />
-            }
+            icon={<ChatsCircle size={isLg ? 24 : 20} color="#E9C46A" weight="duotone" />}
             lineColor="yellow.400"
-            justifyContent="space-between"
-            w="100%"
-            mt={8}
           >
             Contato
           </Subtitle>
-          <Grid
-            mt={4}
-            templateColumns={{ base: '1fr', lg: '1fr 1fr 1fr' }}
-            gap={{ base: 4, lg: 8 }}
-            textAlign="start"
-          >
+          <Grid mt={4} templateColumns={{ base: '1fr', lg: '1fr 1fr 1fr' }} gap={4}>
             <InfoBox title="E-mail" info={donation.email} />
-            <InfoBox
-              title="Número de telefone"
-              info={formatPhone(donation.phoneNumber)}
-            />
+            <InfoBox title="Telefone" info={formatPhone(donation.phoneNumber)} />
             {donation.isPhoneWhatsapp && (
-              <Link href={wppLink} isExternal>
-                <WhatsappLogo size={16} color="#075e54" weight="duotone" />{' '}
-                Abrir whatsapp
-              </Link>
+              <Flex
+                as={Link}
+                href={wppLink}
+                isExternal
+                align="center"
+                gap={2}
+                bg="green.50"
+                color="green.700"
+                borderRadius="md"
+                px={3}
+                py={3}
+                fontSize="sm"
+                fontWeight="medium"
+                _hover={{ bg: 'green.100', textDecoration: 'none' }}
+                transition="background 0.15s"
+                borderLeft="3px solid"
+                borderLeftColor="green.400"
+              >
+                <WhatsappLogo size={18} color="#25d366" weight="fill" />
+                Abrir WhatsApp
+              </Flex>
             )}
           </Grid>
+        </Box>
+
+        {/* Endereço */}
+        <Box bg="white" borderRadius="xl" p={{ base: 4, lg: 6 }} boxShadow="card" mb={4}>
           <Subtitle
             size="lg"
-            icon={
-              <MapPinLine
-                size={isLg ? 32 : 24}
-                color="#E9C46A"
-                weight="duotone"
-              />
-            }
+            icon={<MapPinLine size={isLg ? 24 : 20} color="#E9C46A" weight="duotone" />}
             lineColor="yellow.400"
-            justifyContent="space-between"
-            w="100%"
-            mt={8}
           >
             Endereço
           </Subtitle>
-          <Grid
-            mt={4}
-            templateColumns={{ base: '1fr', lg: '1fr 1fr 1fr' }}
-            gap={{ base: 4, lg: 8 }}
-            textAlign="start"
-          >
-            <InfoBox
-              title="Rua e número"
-              info={`${donation.street}, ${donation.homeNumber}`}
-            />
+          <Grid mt={4} templateColumns={{ base: '1fr', lg: '1fr 1fr 1fr' }} gap={4}>
+            <InfoBox title="Rua e número" info={`${donation.street}, ${donation.homeNumber}`} />
             <InfoBox title="Bairro" info={donation.district} />
-            <InfoBox
-              title="Complemento"
-              info={donation.complement ? donation.complement : 'Não informado'}
-            />
+            <InfoBox title="Complemento" info={donation.complement || 'Não informado'} />
             <InfoBox title="CEP" info={donation.zipCode} />
             <InfoBox title="Cidade" info={donation.city} />
             <InfoBox title="Estado" info={donation.state} />
           </Grid>
+        </Box>
+
+        {/* Doação */}
+        <Box
+          bg="white"
+          borderRadius="xl"
+          p={{ base: 4, lg: 6 }}
+          boxShadow="card"
+          mb={4}
+          borderLeft="4px solid"
+          borderLeftColor={donation.paymentStatus === 'active' ? 'green.400' : donation.paymentStatus === 'canceled' ? 'red.400' : 'yellow.400'}
+        >
           <Subtitle
             size="lg"
-            icon={
-              <HandCoins
-                size={isLg ? 32 : 24}
-                color="#E9C46A"
-                weight="duotone"
-              />
-            }
+            icon={<HandCoins size={isLg ? 24 : 20} color="#E9C46A" weight="duotone" />}
             lineColor="yellow.400"
-            justifyContent="space-between"
-            w="100%"
-            mt={8}
           >
             Doação
           </Subtitle>
-          <Grid
-            mt={4}
-            templateColumns={{ base: '1fr', lg: '1fr 1fr 1fr' }}
-            gap={{ base: 4, lg: 8 }}
-            textAlign="start"
-          >
+          <Grid mt={4} templateColumns={{ base: '1fr', lg: '1fr 1fr 1fr' }} gap={4}>
             <InfoBox
               title="Valor da doação"
-              info={new Intl.NumberFormat('pt-BR', {
-                style: 'currency',
-                currency: 'BRL',
-              }).format(donation.valuePaid / 100)}
+              info={new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(donation.valuePaid / 100)}
             />
             <InfoBox
               title="Método de pagamento"
-              info={
-                donation.paymentMethod
-                  ? donation.paymentMethod
-                  : 'Ainda não informado'
-              }
+              info={donation.paymentMethod || 'Ainda não informado'}
             />
             <InfoBox
-              title="Status do pagamento"
+              title="Status"
               info={
-                donation.paymentStatus === 'active'
-                  ? 'Confirmado'
-                  : donation.paymentStatus === 'canceled'
-                  ? 'Cancelado'
+                donation.paymentStatus === 'active' ? 'Confirmado'
+                  : donation.paymentStatus === 'canceled' ? 'Cancelado'
                   : 'Ainda não informado'
               }
             />
             <InfoBox
               title="Data do pagamento"
-              info={
-                donation.paymentDate
-                  ? new Intl.DateTimeFormat('pt-BR').format(
-                      new Date(donation.paymentDate),
-                    )
-                  : 'Ainda não informado'
-              }
+              info={donation.paymentDate
+                ? new Intl.DateTimeFormat('pt-BR').format(new Date(donation.paymentDate))
+                : 'Ainda não informado'}
             />
             <InfoBox
               title="Data da doação"
-              info={new Intl.DateTimeFormat('pt-BR').format(
-                new Date(donation.createdAt),
-              )}
+              info={new Intl.DateTimeFormat('pt-BR').format(new Date(donation.createdAt))}
             />
             <InfoBox
-              title="Data de expiração da doação"
-              info={
-                donation.donationExpirationDate
-                  ? new Intl.DateTimeFormat('pt-BR').format(
-                      new Date(donation.donationExpirationDate),
-                    )
-                  : 'Não informado'
-              }
+              title="Expiração da doação"
+              info={donation.donationExpirationDate
+                ? new Intl.DateTimeFormat('pt-BR').format(new Date(donation.donationExpirationDate))
+                : 'Não informado'}
             />
           </Grid>
         </Box>
-      </PageLayout>
-    )
-  } else return null
+      </Box>
+    </PageLayout>
+  )
 }

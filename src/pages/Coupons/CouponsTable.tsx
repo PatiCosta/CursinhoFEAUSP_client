@@ -19,6 +19,7 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
+import { Ticket } from '@phosphor-icons/react';
 import { Trash } from '@phosphor-icons/react';
 import { DiscountCoupon } from './index';
 import api from '../../services/api'; // Usa o seu api.ts
@@ -92,8 +93,9 @@ export function CouponsTable({ coupons, onRefresh }: CouponsTableProps) {
 
   if (coupons.length === 0) {
     return (
-      <VStack justify="center" h="200px" color="gray.500">
-        <Text fontSize="lg">Nenhum cupom cadastrado.</Text>
+      <VStack justify="center" h="240px" color="gray.400" spacing={3}>
+        <Ticket size={48} weight="duotone" />
+        <Text fontSize="md" fontWeight="medium">Nenhum cupom cadastrado.</Text>
         <Text fontSize="sm">Clique em "Criar Cupom" para adicionar o primeiro.</Text>
       </VStack>
     )
