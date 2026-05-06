@@ -120,7 +120,7 @@ export function UpdateCourseInfo({ id, course }: UpdateCourseInfoProps) {
       >
         <ModalOverlay />
         <ModalContent as="form" onSubmit={handleSubmit(handleUpdateCourse)}>
-          <ModalHeader>Adicionar etapa</ModalHeader>
+          <ModalHeader>Editar informações</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <Text fontSize={16}>

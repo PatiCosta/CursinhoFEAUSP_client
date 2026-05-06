@@ -1,8 +1,5 @@
 import {
-  Box,
   Button,
-  Flex,
-  Heading,
   Spinner,
   useDisclosure,
   useToast,
@@ -10,9 +7,10 @@ import {
 } from '@chakra-ui/react';
 import { Plus } from '@phosphor-icons/react';
 import { useCallback, useEffect, useState } from 'react';
-import api from '../../services/api'; // Usa o seu api.ts
+import api from '../../services/api';
 import { CreateCouponModal } from './CreateCouponModal';
 import { CouponsTable } from './CouponsTable';
+import { PageLayout } from '../../layouts/PageLayout';
 
 // Interface para definir o tipo de um cupom
 export interface DiscountCoupon {
@@ -56,18 +54,17 @@ export function Coupons() {
   }, [fetchCoupons]);
 
   return (
-    <Box w="100%" h="100%" p={8} ml={80}>
-      <Flex w="100%" justify="space-between" align="center" mb={8}>
-        <Heading size="lg">Gerenciamento de Cupons</Heading>
-        <Button
-          leftIcon={<Plus size={20} />}
-          colorScheme="blue"
-          onClick={onOpen}
-        >
+    <PageLayout
+      variant="list"
+      title="Cupons"
+      subtitle="Aqui você pode gerenciar os cupons de desconto do cursinho"
+      hasButton
+      button={
+        <Button leftIcon={<Plus size={20} />} colorScheme="blue" onClick={onOpen}>
           Criar Cupom
         </Button>
-      </Flex>
-
+      }
+    >
       {isLoading ? (
         <VStack h="300px" justify="center">
           <Spinner size="xl" />
@@ -76,12 +73,8 @@ export function Coupons() {
         <CouponsTable coupons={coupons} onRefresh={fetchCoupons} />
       )}
 
-      <CreateCouponModal
-        isOpen={isOpen}
-        onClose={onClose}
-        onSuccess={fetchCoupons} // Passa a função de refresh
-      />
-    </Box>
+      <CreateCouponModal isOpen={isOpen} onClose={onClose} onSuccess={fetchCoupons} />
+    </PageLayout>
   );
 }
 

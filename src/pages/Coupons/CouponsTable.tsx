@@ -16,6 +16,8 @@ import {
   AlertDialogOverlay,
   useDisclosure,
   Button,
+  Text,
+  VStack,
 } from '@chakra-ui/react';
 import { Trash } from '@phosphor-icons/react';
 import { DiscountCoupon } from './index';
@@ -88,9 +90,18 @@ export function CouponsTable({ coupons, onRefresh }: CouponsTableProps) {
     }
   };
 
+  if (coupons.length === 0) {
+    return (
+      <VStack justify="center" h="200px" color="gray.500">
+        <Text fontSize="lg">Nenhum cupom cadastrado.</Text>
+        <Text fontSize="sm">Clique em "Criar Cupom" para adicionar o primeiro.</Text>
+      </VStack>
+    )
+  }
+
   return (
     <>
-      <Table variant="simple" bg="white" borderRadius="md" boxShadow="base">
+      <Table variant="simple" bg="white" borderRadius="md" boxShadow="base" mt={4}>
         <Thead>
           <Tr>
             <Th>Código</Th>

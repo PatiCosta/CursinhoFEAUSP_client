@@ -33,7 +33,7 @@ export function ViewCourse() {
     if (course === undefined) {
       handleReturn()
     }
-  })
+  }, [course])
 
   if (course !== undefined) {
     return (

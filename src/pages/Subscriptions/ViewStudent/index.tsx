@@ -69,7 +69,7 @@ export function ViewStudent() {
     if (student === undefined) {
       handleReturn()
     }
-  })
+  }, [student])
 
   if (student !== undefined) {
     return (

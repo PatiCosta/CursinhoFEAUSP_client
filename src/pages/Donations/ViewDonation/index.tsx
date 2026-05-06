@@ -30,7 +30,7 @@ export function ViewDonation() {
     if (donation === undefined) {
       handleReturn()
     }
-  })
+  }, [donation])
 
   if (donation !== undefined) {
     return (
