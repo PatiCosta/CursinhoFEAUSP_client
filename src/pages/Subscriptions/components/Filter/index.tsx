@@ -115,7 +115,6 @@ export function Filter() {
 
   const handleAddFilter = useCallback<HandleAddFilter>(
     ({ key, value }) => {
-      console.log('Adding filter:', key, value) // Log adicionado para depuração
       if (
         Object.keys(search).length !== 0 &&
         Object.keys(search).find((searchKey) => searchKey === key) !== undefined

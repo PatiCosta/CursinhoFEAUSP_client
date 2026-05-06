@@ -216,6 +216,12 @@ export function Users() {
                     </Td>
                   </Tr>
                 </>
+              ) : users.length === 0 ? (
+                <Tr>
+                  <Td colSpan={3} textAlign="center" py={10} color="gray.500">
+                    Nenhum administrador encontrado.
+                  </Td>
+                </Tr>
               ) : (
                 users.map((user: User) => {
                   return (

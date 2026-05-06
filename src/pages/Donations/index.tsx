@@ -137,6 +137,12 @@ export function Donations() {
                     </Td>
                   </Tr>
                 </>
+              ) : donations.length === 0 ? (
+                <Tr>
+                  <Td colSpan={isLg ? 4 : 2} textAlign="center" py={10} color="gray.500">
+                    Nenhuma doação encontrada.
+                  </Td>
+                </Tr>
               ) : (
                 donations.map((donation: Donation) => {
                   return (

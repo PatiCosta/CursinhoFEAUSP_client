@@ -98,7 +98,6 @@ export function CoursesProvider({ children }: { children: ReactNode }) {
     await api
       .get('/schoolClass', { params })
       .then((response) => {
-        console.log(response)
         dispatch(
           getCoursesFromApi({
             courses: response.data.schoolClassResponse.schoolClassList,

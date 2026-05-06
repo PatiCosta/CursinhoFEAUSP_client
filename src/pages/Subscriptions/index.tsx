@@ -19,11 +19,11 @@ import {
 import { MagnifyingGlass } from '@phosphor-icons/react'
 import { Pagination } from '../../components/Pagination'
 import { useStudents } from '../../hooks/subscriptions'
+import { useCourses } from '../../hooks/courses'
 import { useNavigate, useLocation } from 'react-router-dom'
-import { useEffect, useState, useMemo } from 'react'
+import { useMemo } from 'react'
 import { Filter } from './components/Filter'
 import { Export } from './components/Export'
-import api from '../../services/api' 
 
 export function Subscriptions() {
   const {
@@ -37,41 +37,26 @@ export function Subscriptions() {
   const navigate = useNavigate()
   const location = useLocation()
   const isLg = useBreakpointValue({ base: false, sm: false, lg: true })
-  const [quantityOfFilters, setQuantityOfFilters] = useState(0)
+  const quantityOfFilters = useMemo(() => {
+    if (location.search === '') return 0
+    return Object.keys(Object.fromEntries(new URLSearchParams(location.search))).length
+  }, [location.search])
 
-  // ATUALIZADO: Estado para armazenar detalhes da turma (Título e Cor)
-  const [classDetails, setClassDetails] = useState<Record<string, { title: string; color: string }>>({});
+  const { courses } = useCourses()
 
-  useEffect(() => {
-    if (location.search !== '') {
-      const query = Object.fromEntries(new URLSearchParams(location.search))
-      setQuantityOfFilters(Object.entries(query).length)
-    } else {
-      setQuantityOfFilters(0)
-    }
-  }, [page, location.search])
-
-  // Buscar turmas para preencher nomes e CORES
-  useEffect(() => {
-    api.get('/schoolClass').then(response => {
-        const responseData = response.data;
-        const classesList = responseData?.schoolClassResponse?.schoolClassList || [];
-        
-        // Mapeamos ID -> { Title, Color }
-        const detailsMap: Record<string, { title: string; color: string }> = {};
-        
-        classesList.forEach((cls: any) => {
-            if (cls.id && cls.title) {
-                detailsMap[cls.id] = {
-                    title: cls.title,
-                    // Pega a cor de informations.color ou usa cinza como fallback
-                    color: cls.informations?.color || 'gray.500' 
-                };
-            }
-        });
-        setClassDetails(detailsMap);
-    }).catch(err => console.error("Erro ao buscar turmas:", err));
-  }, []);
+  // Mapa ID -> { title, color } construído a partir do contexto de cursos (sem request extra)
+  const classDetails = useMemo(() => {
+    const map: Record<string, { title: string; color: string }> = {}
+    courses.forEach((cls) => {
+      if (cls.id) {
+        map[cls.id] = {
+          title: cls.title,
+          color: cls.informations?.color || 'gray.500',
+        }
+      }
+    })
+    return map
+  }, [courses])
 
   // --- LÓGICA DE TRANSFORMAÇÃO (FLATTEN) COM FILTRO VISUAL ---
   const subscriptionRows = useMemo(() => {
