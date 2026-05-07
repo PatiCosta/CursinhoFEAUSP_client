@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Fundo arredondado brand.blue -->
+  <rect width="32" height="32" rx="7" fill="#2a255a"/>
+
+  <!-- Chapéu: aba plana (losango visto de cima) -->
+  <polygon points="16,5 29,10.5 16,16 3,10.5" fill="#E9C46A"/>
+
+  <!-- Chapéu: corpo pendurado -->
+  <path d="M9,13 L9,20 C9,20 12,23 16,23 C20,23 23,20 23,20 L23,13 L16,16 Z" fill="#E9C46A" opacity="0.88"/>
+
+  <!-- Cordão do capelo -->
+  <line x1="27" y1="10.5" x2="27" y2="19.5" stroke="#E9C46A" stroke-width="1.6" stroke-linecap="round"/>
+
+  <!-- Borla -->
+  <circle cx="27" cy="21.5" r="1.9" fill="#E9C46A"/>
+</svg>
