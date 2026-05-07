@@ -20,6 +20,7 @@ import {
   UserCircleGear,
   UsersThree,
   Ticket,
+  WhatsappLogo,
 } from '@phosphor-icons/react'
 
 import circleNight from '../../assets/circle_night_sidebar.png'
@@ -219,6 +220,38 @@ export function Nav() {
         />
       </Flex>
 
+      {/* Suporte — desktop */}
+      <Flex
+        display={{ base: 'none', sm: 'none', lg: 'flex' }}
+        px={4}
+        mb={2}
+      >
+        <Flex
+          as="a"
+          href="https://wa.me/5511971415567?text=Olá! Preciso de suporte com o painel do Cursinho FEA USP."
+          target="_blank"
+          rel="noopener noreferrer"
+          w="100%"
+          align="center"
+          gap={2}
+          px={3}
+          py={2}
+          borderRadius="lg"
+          bg="green.50"
+          color="green.700"
+          fontSize="sm"
+          fontWeight="semibold"
+          borderLeft="3px solid"
+          borderLeftColor="green.400"
+          _hover={{ bg: 'green.100', textDecoration: 'none' }}
+          transition="background 0.15s"
+          cursor="pointer"
+        >
+          <WhatsappLogo size={18} color="#25d366" weight="fill" />
+          Suporte
+        </Flex>
+      </Flex>
+
       {/* Logout + logo — desktop */}
       <Flex
         direction="column"
@@ -246,8 +279,20 @@ export function Nav() {
         </Flex>
       </Flex>
 
-      {/* Logout — mobile */}
-      <Box display={{ base: 'flex', sm: 'flex', lg: 'none' }} alignItems="center" px={4}>
+      {/* Suporte + Logout — mobile */}
+      <Box display={{ base: 'flex', sm: 'flex', lg: 'none' }} alignItems="center" gap={2} px={4}>
+        <Tooltip label="Suporte via WhatsApp" placement="bottom">
+          <IconButton
+            as="a"
+            href="https://wa.me/5511971415567?text=Olá! Preciso de suporte com o painel do Cursinho FEA USP."
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Suporte"
+            icon={<WhatsappLogo size={18} color="#25d366" weight="fill" />}
+            variant="ghost"
+            size="sm"
+          />
+        </Tooltip>
         <Tooltip label="Sair" placement="bottom">
           <IconButton
             aria-label="Sair"
