@@ -96,7 +96,6 @@ export function ViewStudent() {
             <InfoBox title="Gênero" info={student.gender || 'Não informado'} />
             <InfoBox title="Data de nascimento" info={student.birth} />
             <InfoBox title="CPF" info={formatCPF(student.cpf)} copyValue={student.cpf} />
-            <InfoBox title="RG / UF de emissão" info={student.rg ? `${student.rg} / ${student.ufrg}` : 'Não informado'} />
             <InfoBox title="Ex-aluno?" info={student.exStudent} />
             <InfoBox title="Como nos conheceu?" info={student.metUsMethod || 'Não informado'} />
             <InfoBox
