@@ -46,6 +46,7 @@ export function PageLayout({
             }
           : 'fit-content'
       }
+      overflowY={hasPagination ? 'auto' : undefined}
       {...rest}
     >
       <Flex
