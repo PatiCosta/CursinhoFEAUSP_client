@@ -189,7 +189,7 @@ export function Filter() {
               >
                 Adicionar filtro
               </MenuButton>
-              <MenuList>
+              <MenuList maxH="420px" overflowY="auto">
                 <NameFilter
                   handleAddFilter={handleAddFilter}
                   isDisabled={isFilterDisabled('name')}
