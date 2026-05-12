@@ -7,11 +7,17 @@ import {
   useBreakpointValue,
   IconButton,
   Tooltip,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  MenuDivider,
 } from '@chakra-ui/react'
 import { Link } from 'react-router-dom'
 import { ReactNode } from 'react'
 import {
   GraduationCap,
+  List,
   Money,
   MoonStars,
   SignOut,
@@ -114,23 +120,24 @@ export function Nav() {
       boxShadow={{ base: 'md', sm: 'md', lg: 'none' }}
       zIndex={1000}
     >
-      {/* Logo + greeting — desktop */}
+      {/* Logo + greeting + sino — desktop */}
       <Flex
         direction="column"
         alignItems="center"
         pt={8}
-        pb={4}
+        pb={3}
         display={{ base: 'none', sm: 'none', lg: 'flex' }}
         borderBottom="1px solid"
         borderColor="gray.100"
         mx={4}
+        gap={1}
       >
         <Image
           src={imgCircle[`${period}`]}
           alt="período do dia"
           h="80px"
           w="fit-content"
-          mb={3}
+          mb={2}
         />
         <Flex alignItems="center" gap={1}>
           <Text fontSize={15} fontWeight="semibold" color="brand.blue">
@@ -147,22 +154,102 @@ export function Nav() {
         <Text fontSize={13} color="gray.500" fontWeight="medium">
           {user?.name}
         </Text>
+        <Box mt={1}>
+          <NotificationBell />
+        </Box>
       </Flex>
 
-      {/* Logo — mobile */}
-      <Box display={{ base: 'flex', sm: 'flex', lg: 'none' }} alignItems="center" px={4}>
-        <Image src={logo} alt="Logo cursinho" h="36px" />
-      </Box>
-
-      {/* Nav links */}
+      {/* Logo + hamburguer — mobile */}
       <Flex
-        direction={{ base: 'row', sm: 'row', lg: 'column' }}
-        px={{ base: 4, sm: 4, lg: 0 }}
-        py={{ base: 0, lg: 4 }}
-        gap={{ base: 3, sm: 3, lg: 1 }}
-        alignItems={{ base: 'center', lg: 'stretch' }}
+        display={{ base: 'flex', sm: 'flex', lg: 'none' }}
+        alignItems="center"
+        justifyContent="space-between"
+        px={4}
+        w="100%"
+      >
+        <Image src={logo} alt="Logo cursinho" h="36px" />
+        <Flex align="center" gap={1}>
+          <NotificationBell />
+          <Menu>
+            <MenuButton
+              as={IconButton}
+              icon={<List size={22} color="#2a255a" weight="bold" />}
+              variant="ghost"
+              size="sm"
+              aria-label="Menu"
+            />
+            <MenuList zIndex={2000}>
+              <MenuItem
+                icon={<UsersThree size={16} color={location.includes('inscricoes') ? '#2a255a' : '#718096'} weight="duotone" />}
+                as={Link}
+                to="/inscricoes"
+                fontWeight={location.includes('inscricoes') ? 'semibold' : 'normal'}
+              >
+                Inscrições
+              </MenuItem>
+              <MenuItem
+                icon={<Money size={16} color={location.includes('doacoes') ? '#2a255a' : '#718096'} weight="duotone" />}
+                as={Link}
+                to="/doacoes"
+                fontWeight={location.includes('doacoes') ? 'semibold' : 'normal'}
+              >
+                Doações
+              </MenuItem>
+              <MenuItem
+                icon={<GraduationCap size={16} color={location.includes('cursos') ? '#2a255a' : '#718096'} weight="duotone" />}
+                as={Link}
+                to="/cursos"
+                fontWeight={location.includes('cursos') ? 'semibold' : 'normal'}
+              >
+                Cursos
+              </MenuItem>
+              <MenuItem
+                icon={<UserCircleGear size={16} color={location.includes('usuarios') ? '#2a255a' : '#718096'} weight="duotone" />}
+                as={Link}
+                to="/usuarios"
+                fontWeight={location.includes('usuarios') ? 'semibold' : 'normal'}
+              >
+                Usuários
+              </MenuItem>
+              <MenuItem
+                icon={<Ticket size={16} color={location.includes('cupons') ? '#2a255a' : '#718096'} weight="duotone" />}
+                as={Link}
+                to="/cupons"
+                fontWeight={location.includes('cupons') ? 'semibold' : 'normal'}
+              >
+                Cupons
+              </MenuItem>
+              <MenuDivider />
+              <MenuItem
+                icon={<WhatsappLogo size={16} color="#25d366" weight="fill" />}
+                as="a"
+                href="https://wa.me/5511971415567?text=Olá! Preciso de suporte com o painel do Cursinho FEA USP."
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Suporte
+              </MenuItem>
+              <MenuItem
+                icon={<SignOut size={16} color="#FC8181" weight="bold" />}
+                onClick={signOut}
+                color="red.400"
+              >
+                Sair
+              </MenuItem>
+            </MenuList>
+          </Menu>
+        </Flex>
+      </Flex>
+
+      {/* Nav links — desktop only */}
+      <Flex
+        direction="column"
+        px={0}
+        py={4}
+        gap={1}
+        alignItems="stretch"
         flex="1"
-        justifyContent={{ base: 'center', lg: 'flex-start' }}
+        display={{ base: 'none', sm: 'none', lg: 'flex' }}
       >
         <NavButton
           linkTo="inscricoes"
@@ -219,16 +306,6 @@ export function Nav() {
             />
           }
         />
-      </Flex>
-
-      {/* Notificações — desktop */}
-      <Flex
-        display={{ base: 'none', sm: 'none', lg: 'flex' }}
-        px={4}
-        mb={1}
-        justify="center"
-      >
-        <NotificationBell />
       </Flex>
 
       {/* Suporte — desktop */}
@@ -290,31 +367,6 @@ export function Nav() {
         </Flex>
       </Flex>
 
-      {/* Notificações + Suporte + Logout — mobile */}
-      <Box display={{ base: 'flex', sm: 'flex', lg: 'none' }} alignItems="center" gap={2} px={4}>
-        <NotificationBell />
-        <Tooltip label="Suporte via WhatsApp" placement="bottom">
-          <IconButton
-            as="a"
-            href="https://wa.me/5511971415567?text=Olá! Preciso de suporte com o painel do Cursinho FEA USP."
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Suporte"
-            icon={<WhatsappLogo size={18} color="#25d366" weight="fill" />}
-            variant="ghost"
-            size="sm"
-          />
-        </Tooltip>
-        <Tooltip label="Sair" placement="bottom">
-          <IconButton
-            aria-label="Sair"
-            icon={<SignOut size={18} color="#718096" weight="bold" />}
-            variant="ghost"
-            size="sm"
-            onClick={signOut}
-          />
-        </Tooltip>
-      </Box>
     </Flex>
   )
 }
