@@ -35,7 +35,7 @@ export function useNotifications() {
       const lastSeenAt = getLastSeenAt()
 
       const response = await api.get('/students', {
-        params: { page: 1, pageRange: 30, paymentStatus: 'CONCLUIDA', initDate: lastSeenAt },
+        params: { page: 1, pageRange: 30, paymentStatus: 'CONCLUIDA', initDate: lastSeenAt.slice(0, 10) },
       })
 
       const students: Student[] = response.data.studentsList ?? []
