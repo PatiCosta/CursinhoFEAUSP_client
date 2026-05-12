@@ -168,7 +168,7 @@ export function Filter() {
         onClick={onOpen}
       />
 
-      <Modal isOpen={isOpen} onClose={onClose} size="lg">
+      <Modal isOpen={isOpen} onClose={onClose} size="lg" blockScrollOnMount={false}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Filtros</ModalHeader>
