@@ -26,8 +26,10 @@ import { Button } from '../../../../components/Button'
 import { NameFilter } from './NameFilter'
 import { EmailFilter } from './EmailFilter'
 import { CpfFilter } from './CpfFilter'
-import { PaymentStatusFilter } from './PaymentStatusFilter' // Importe o novo componente
+import { PaymentStatusFilter } from './PaymentStatusFilter'
+import { SchoolClassFilter } from './SchoolClassFilter'
 import { useStudents } from '../../../../hooks/subscriptions'
+import { useCourses } from '../../../../hooks/courses'
 
 export interface FilterState {
   name?: string
@@ -50,6 +52,7 @@ export function Filter() {
   const [search, setSearch] = useState<FilterState>({})
 
   const { changePage, list, page } = useStudents()
+  const { courses } = useCourses()
 
   const location = useLocation()
   const navigate = useNavigate()
@@ -81,6 +84,10 @@ export function Filter() {
         default:
           return val
       }
+    }
+    if (key === 'schoolClassID') {
+      const turma = courses.find((c) => c.id === val)
+      return turma ? turma.title : val
     }
     return val
   }
@@ -196,10 +203,13 @@ export function Filter() {
                   handleAddFilter={handleAddFilter}
                   isDisabled={isFilterDisabled('cpf')}
                 />
-                {/* Adicionado o componente de filtro de status */}
                 <PaymentStatusFilter
                   handleAddFilter={handleAddFilter}
                   isDisabled={isFilterDisabled('paymentStatus')}
+                />
+                <SchoolClassFilter
+                  handleAddFilter={handleAddFilter}
+                  isDisabled={isFilterDisabled('schoolClassID')}
                 />
               </MenuList>
             </Menu>
