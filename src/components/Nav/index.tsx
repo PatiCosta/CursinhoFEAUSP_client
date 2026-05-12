@@ -31,6 +31,7 @@ import logo from '../../assets/logo.png'
 
 import { useAuth } from '../../hooks/auth'
 import { getPeriodOfDay } from '../../utils/getPeriodOfDay'
+import { NotificationBell } from './NotificationBell'
 
 interface NavButtonProps {
   linkTo: string
@@ -220,6 +221,16 @@ export function Nav() {
         />
       </Flex>
 
+      {/* Notificações — desktop */}
+      <Flex
+        display={{ base: 'none', sm: 'none', lg: 'flex' }}
+        px={4}
+        mb={1}
+        justify="center"
+      >
+        <NotificationBell />
+      </Flex>
+
       {/* Suporte — desktop */}
       <Flex
         display={{ base: 'none', sm: 'none', lg: 'flex' }}
@@ -279,8 +290,9 @@ export function Nav() {
         </Flex>
       </Flex>
 
-      {/* Suporte + Logout — mobile */}
+      {/* Notificações + Suporte + Logout — mobile */}
       <Box display={{ base: 'flex', sm: 'flex', lg: 'none' }} alignItems="center" gap={2} px={4}>
+        <NotificationBell />
         <Tooltip label="Suporte via WhatsApp" placement="bottom">
           <IconButton
             as="a"
