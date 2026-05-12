@@ -1,5 +1,6 @@
 import { MenuDivider, MenuItem, MenuOptionGroup, Text } from '@chakra-ui/react'
 import { GraduationCap } from '@phosphor-icons/react'
+import { useEffect } from 'react'
 import { useCourses } from '../../../../hooks/courses'
 
 interface SchoolClassFilterProps {
@@ -8,7 +9,11 @@ interface SchoolClassFilterProps {
 }
 
 export function SchoolClassFilter({ handleAddFilter, isDisabled }: SchoolClassFilterProps) {
-  const { courses } = useCourses()
+  const { courses, list } = useCourses()
+
+  useEffect(() => {
+    if (courses.length === 0) list()
+  }, [])
 
   const activeCourses = courses.filter((c) => c.subscriptions?.status === 'Aberto')
   const otherCourses = courses.filter((c) => c.subscriptions?.status !== 'Aberto')
