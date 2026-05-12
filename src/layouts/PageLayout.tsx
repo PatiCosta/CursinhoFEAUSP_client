@@ -37,16 +37,11 @@ export function PageLayout({
       px={{ base: 2, sm: 2, lg: 8 }}
       pt={{ base: 4, sm: 4, lg: 10 }}
       pb={4}
-      h={
+      minH={
         hasPagination
-          ? {
-              base: 'calc(100vh - 80px)',
-              sm: 'calc(100vh - 80px)',
-              lg: '100vh',
-            }
+          ? { base: 'calc(100vh - 80px)', sm: 'calc(100vh - 80px)', lg: '100vh' }
           : 'fit-content'
       }
-      overflowY={hasPagination ? 'auto' : undefined}
       {...rest}
     >
       <Flex
