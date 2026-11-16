@@ -119,6 +119,16 @@ export function ViewStudent() {
             <InfoBox title="E-mail" info={student.email} copyValue={student.email} />
             <InfoBox title="Telefone" info={formatPhone(student.phoneNumber)} />
             <InfoBox title="E-mail do responsável" info={student.emailResponsavel || 'N/A'} />
+            <InfoBox
+              title="Nome do responsável"
+              info={student.nomeResponsavel || 'N/A'}
+              copyValue={student.nomeResponsavel || undefined}
+            />
+            <InfoBox
+              title="CPF do responsável"
+              info={student.cpfResponsavel ? formatCPF(student.cpfResponsavel) : 'N/A'}
+              copyValue={student.cpfResponsavel || undefined}
+            />
             {student.isPhoneWhatsapp && (
               <Flex
                 as={Link}
