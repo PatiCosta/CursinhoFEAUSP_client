@@ -25,6 +25,8 @@ export interface Student {
   isPhoneWhatsapp: boolean // ok
 
   emailResponsavel: string | null // ok
+  nomeResponsavel?: string | null
+  cpfResponsavel?: string | null
 
   state: string // ok
   city: string // ok
